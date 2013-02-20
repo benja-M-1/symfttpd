@@ -32,7 +32,8 @@ Add Symfttpd as a requirement of your project with Composer:
     {
         …
         "require-dev": {
-            "benjam1/symfttpd": "2.1.*@        },
+            "benjam1/symfttpd": "2.1.*@"
+        },
         "config": {
             "bin-dir": "bin/"
         }
@@ -110,10 +111,10 @@ First of all you need to configure symfttpd with a `symfttpd.conf.php` file.
 
 Symfttpd looks for the configuration file:
 
-* in you home directory, this file must be named `.symfttpd.conf.php`
+* in your home directory, this file must be named `.symfttpd.conf.php`
 * in the root directory of your project (or in config/ for a symfony 1.x project)
 
-By default symfttpd read the configuration from it's own `symfttpd.conf.php` file.
+By default symfttpd read the configuration from its own `symfttpd.conf.php` file.
 
 ### What I have to configure?
 
@@ -174,9 +175,7 @@ You can alter the default configuration of the server, by using the `symfttpd.co
 ## genconf
 
 If you don't want to copy/paste your server configs, handle regular expressions
-when you add files, or fight rewriting issues (which can often happen
-considering that most available examples are badly written),
-then this tool is for you.
+when you add files, or fight rewriting issues, then this tool is for you.
 
 
 ### Quick start
@@ -224,6 +223,7 @@ external files, nor writes anything anywhere, so it is very little risk.
 ### Can I use spawn in production?
 
 No!
+
 
 ### Can I start spawn in the background?
 
