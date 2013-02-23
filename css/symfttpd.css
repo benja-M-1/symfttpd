@@ -29,6 +29,11 @@ header .hero-unit {
     margin-top: 50px;
 }
 
+#downloads .version {
+    font-size: 12px;
+    font-family: museo-slab;
+}
+
 .btn code {
     color: inherit;
     background: none;
