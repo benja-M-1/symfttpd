@@ -7,10 +7,10 @@
               content="Symfttpd : symfttpd is a set of tools to use symfony and lighttpd together, aimed at lazy developers and sysadmins"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ site.baseurl }}/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ site.baseurl }}/css/bootstrap-responsive.min.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ site.baseurl }}/css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="{{ site.baseurl }}/css/symfttpd.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ site.url }}/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ site.url }}/css/bootstrap-responsive.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ site.url }}/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="{{ site.url }}/css/symfttpd.css">
 
         <title>{{ page.title }}</title>
     </head>
@@ -42,6 +42,7 @@
             <div class="navbar-inner">
                 <div class="container">
                     <ul class="nav">
+                        <li><a href="{{ site.url }}">Home</a></li>
                     </ul>
                     <ul class="nav pull-right">
                         <li><a href="http://packagist.org/benjam1/symfttpd">View on Packagist <i class="icon-arrow-right"></i></a></li>
