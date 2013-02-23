@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'/>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1"/>
+        <meta name="description"
+              content="Symfttpd : symfttpd is a set of tools to use symfony and lighttpd together, aimed at lazy developers and sysadmins"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/bootstrap-responsive.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/symfttpd.css">
+
+        <title>{{ page.title }}</title>
+    </head>
+
+    <body>
+        <header>
+            <div class="container">
+                <div class="row-fluid">
+                    <div class="clearfix hero-unit">
+                        <div class="span7">
+                            <h1>Symfttpd</h1>
+                            <p>Symfttpd is a set of tools to use symfony and lighttpd together, aimed at <br/>lazy developers and sysadmins</p>
+                        </div>
+                        <div id="downloads" class="span5">
+                            <a href="/downloads/symfttpd.phar" class="btn btn-large btn-primary"><i class="icon-download"></i> Donwload <code>.phar</code></a>
+                            <a href="{{ site.github }}" class="btn btn-large"><i class="icon-github"></i> View on Github</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <navigation class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <ul class="nav">
+                    </ul>
+                    <ul class="nav pull-right">
+                        <li><a href="http://packagist.org/benjam1/symfttpd">View on Packagist <i class="icon-arrow-right"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </navigation>
+
+        <section class="container">
+            {{ content }}
+        </section>
+
+        <footer class="inner">
+            <div class="container">
+                <div class="row-fluid">
+                    <div class="span4">
+                        <p>
+                            Symfttpd is maintained by <a href="https://github.com/benja-M-1">benja-M-1</a> since 2012
+                        <p>
+                    </div>
+                    <div class="span4 pull-right">
+                        <p>
+                            You can find me on <a href="http://twitter.com/benjaM1"><i class="icon-twitter"></i> Twitter</a>
+                        <p>
+                    </div>
+                </div>
+        </footer>
+    </body>
+</html>

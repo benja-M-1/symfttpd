@@ -1,55 +1,27 @@
-<!DOCTYPE html>
-<html>
+---
+layout: default
+title: Symfttpd
+---
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Symfttpd : symfttpd is a set of tools to use symfony and lighttpd together, aimed at lazy developers and sysadmins" />
+<div class="row-fluid">
+    {% if site.posts.size == 0 %}
+        <div class="span12 text-center">
+            New post to be publish soon, stay tuned :)
+        </div>
+    {% endif %}
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Symfttpd</title>
-  </head>
-
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/benja-M-1/symfttpd">View on GitHub</a>
-
-          <h1 id="project_title">Symfttpd</h1>
-          <h2 id="project_tagline">Symfttpd is a set of tools to use symfony and lighttpd together, aimed at lazy developers and sysadmins</h2>
-
-            <section>
-              <a class="zip_download_link" href="/symfttpd/downloads/symfttpd.phar">Download the latest version</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>Symfttpd</h3>
-
-        <p>
-          As of today (2012/12/12) Github <a href="https://github.com/blog/1302-goodbye-uploads">stopped the download and upload service</a>, so you cannot update Symfttpd using the selfupdate command. That's why I set up in hurry this website, you can <a href="/symfttpd/downloads/symfttpd.phar">download</a> from here the lastest version of Symfttpd.
-        </p>
-
-        <p>I hope that this site will provide more informations really soon! :)</p>
-
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Symfttpd maintained by <a href="https://github.com/benja-M-1">benja-M-1</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
-</html>
+    {% for post in site.posts %}
+        {% if forloop.first %}
+            <div class="clearfix span12 first-post-line">
+        {% else %}
+            {% cycle '<div class="row-fluid posts-line">', '' %}
+            <div class="span6">
+        {% endif %}
+            <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+            <div><i class="icon-time"></i> {{ post.date | date_to_string }}</div>
+            <p>{{ post.content | truncate:200 }}</p>
+            <a href="{{ post.url }}">...Read</a>
+        </div>
+        {% cycle '</div>', '' %}
+    {% endfor %}
+</div>

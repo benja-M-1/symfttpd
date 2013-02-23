@@ -1,1 +1,7 @@
+markdown: rdiscount
+pygments: true
 include: [downloads]
+permalink: /blog/:year/:month/:day/:title
+github: "https://github.com/benja-M-1/symfttpd"
+symfttpd_path: '/downloads/symfttpd.phar'
+symfttpd_version: 2.1.0
