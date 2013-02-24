@@ -60,19 +60,10 @@ class Application extends BaseApplication
 
         $c['debug'] = false;
 
-        // Configure the project guesser.
-        $c['project.symfony1_checker'] = $c->share(function () {
-            return new Symfony1Checker();
-        });
-
-        $c['project.symfony2_checker'] = $c->share(function () {
-            return new Symfony2Checker();
-        });
-
         $c['project.guesser'] = $c->share(function ($c) {
             $guesser = new ProjectGuesser();
-            $guesser->registerChecker($c['project.symfony1_checker']);
-            $guesser->registerChecker($c['project.symfony2_checker']);
+            $guesser->registerChecker(new Symfony1Checker());
+            $guesser->registerChecker(new Symfony2Checker());
 
             return $guesser;
         });
