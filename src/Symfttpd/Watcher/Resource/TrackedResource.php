@@ -33,9 +33,13 @@ class TrackedResource implements ResourceInterface
      */
     public function __construct($resource)
     {
-        $this->resource  = new \SplFileInfo($resource);
-        $this->updatedAt = new \DateTime();
-        $this->updatedAt->setTimestamp($this->resource->getCTime());
+        $this->resource  = new \SplFileInfo(realpath($resource));
+
+        if (!$this->resource->isReadable()) {
+            throw new \Symfttpd\Exception\FileNotFoundException("$resource does not exist, Symfttpd can't track its changes.");
+        }
+
+        $this->updatedAt = $this->resource->getMTime();
     }
 
     /**
@@ -51,8 +55,8 @@ class TrackedResource implements ResourceInterface
      */
     public function hasChanged()
     {
-        if ($this->resource->getCTime() > $this->updatedAt->getTimestamp()) {
-            $this->updatedAt->setTimestamp($this->resource->getCTime());
+        if ($this->resource->getCTime() > $this->updatedAt) {
+            $this->updatedAt = $this->resource->getMTime();
 
             return true;
         }
