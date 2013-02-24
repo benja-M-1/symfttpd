@@ -53,7 +53,7 @@ class InitCommand extends Command
             '',
             '<comment>Symfttpd file successfuly created!</comment>',
             '',
-            '<info>You can now start your webserver: <comment>"php symfttpd.phar spawn"</comment>.</info>'
+            sprintf('<info>You can now start your webserver: <comment>"%s spawn"</comment>.</info>', $this->getExecutable())
         ));
     }
 
@@ -109,5 +109,20 @@ class InitCommand extends Command
     public function getUserChoices()
     {
         return $this->userChoices;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getExecutable()
+    {
+        $args = $_SERVER['argv'];
+        $executable = reset($args);
+
+        if (strpos($executable, 'phar')) {
+            $executable = "php $executable";
+        }
+
+        return $executable;
     }
 }
