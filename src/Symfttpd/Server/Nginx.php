@@ -11,6 +11,8 @@
 
 namespace Symfttpd\Server;
 
+use Symfttpd\ConfigurationGenerator;
+
 /**
  * Nginx description
  *
@@ -24,5 +26,16 @@ class Nginx extends Server
     public function getName()
     {
         return 'nginx';
+    }
+
+    /**
+     * @param ConfigurationGenerator $generator
+     *
+     * @return array
+     * @throws \RuntimeException
+     */
+    protected function getCommandLineArguments(ConfigurationGenerator $generator)
+    {
+        return array($this->options['executable'], '-c', $generator->dump($this, true));
     }
 }

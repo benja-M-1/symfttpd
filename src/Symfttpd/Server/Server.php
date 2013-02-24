@@ -126,23 +126,8 @@ abstract class Server implements ServerInterface
      *
      * @return array
      * @throws \RuntimeException
-     * @todo Move to each server class and make it abstract
      */
-    protected function getCommandLineArguments(ConfigurationGenerator $generator)
-    {
-        switch ($this->getName()) {
-            case 'lighttpd':
-                $arguments = array($this->options['executable'], '-f', $generator->dump($this, true));
-                break;
-            case 'nginx':
-                $arguments = array($this->options['executable'], '-c', $generator->dump($this, true));
-                break;
-            default:
-                throw new \RuntimeException('The type of the server must be provided.');
-        }
-
-        return $arguments;
-    }
+    abstract protected function getCommandLineArguments(ConfigurationGenerator $generator);
 
     /**
      * Set the gateway instance used by the server.

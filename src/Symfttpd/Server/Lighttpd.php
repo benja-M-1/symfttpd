@@ -11,6 +11,8 @@
 
 namespace Symfttpd\Server;
 
+use Symfttpd\ConfigurationGenerator;
+
 /**
  * Lighttpd description
  *
@@ -25,4 +27,16 @@ class Lighttpd extends Server
     {
         return 'lighttpd';
     }
+
+    /**
+     * @param ConfigurationGenerator $generator
+     *
+     * @return array
+     * @throws \RuntimeException
+     */
+    protected function getCommandLineArguments(ConfigurationGenerator $generator)
+    {
+        return array($this->options['executable'], '-f', $generator->dump($this, true));
+    }
+
 }
