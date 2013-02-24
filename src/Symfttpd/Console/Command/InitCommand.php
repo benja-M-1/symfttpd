@@ -64,7 +64,7 @@ class InitCommand extends Command
     {
         $container = $this->getApplication()->getContainer();
 
-        /** @var $dialog \Symfony\Component\Console\Helper\DialogHelper */
+        /** @var $dialog \Symfttpd\Console\Helper\DialogHelper */
         $dialog = $this->getHelper('dialog');
 
         // Project related configuration
