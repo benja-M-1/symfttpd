@@ -26,7 +26,7 @@ class TrackedResource implements ResourceInterface
     /**
      * @var \DateTime The unix timestamp when the resource has been tracked
      */
-    protected $updatedAd;
+    protected $updatedAt;
 
     /**
      * @param string $resource The filesystem resource
@@ -34,8 +34,8 @@ class TrackedResource implements ResourceInterface
     public function __construct($resource)
     {
         $this->resource  = new \SplFileInfo($resource);
-        $this->updatedAd = new \DateTime();
-        $this->updatedAd->setTimestamp($this->resource->getCTime());
+        $this->updatedAt = new \DateTime();
+        $this->updatedAt->setTimestamp($this->resource->getCTime());
     }
 
     /**
@@ -51,8 +51,8 @@ class TrackedResource implements ResourceInterface
      */
     public function hasChanged()
     {
-        if ($this->resource->getCTime() > $this->updatedAd->getTimestamp()) {
-            $this->updatedAd->setTimestamp($this->resource->getCTime());
+        if ($this->resource->getCTime() > $this->updatedAt->getTimestamp()) {
+            $this->updatedAt->setTimestamp($this->resource->getCTime());
 
             return true;
         }
