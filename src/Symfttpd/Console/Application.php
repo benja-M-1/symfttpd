@@ -45,6 +45,11 @@ use Symfttpd\SymfttpdFile;
 class Application extends BaseApplication
 {
     /**
+     * @var Symfttpd
+     */
+    protected $symfttpd;
+
+    /**
      * @var \Pimple
      */
     protected $container;
@@ -52,8 +57,10 @@ class Application extends BaseApplication
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(Symfttpd $symfttpd)
     {
+        $this->symfttpd = $symfttpd;
+
         parent::__construct('Symfttpd', Symfttpd::VERSION);
 
         $this->container = $c = new \Pimple();
@@ -153,26 +160,17 @@ class Application extends BaseApplication
             return new $class($config);
         });
 
-        $c['supported_servers'] = array(
-            \Symfttpd\Server\Server::TYPE_LIGHTTPD,
-            \Symfttpd\Server\Server::TYPE_NGINX,
-        );
-
-        $c['server'] = $c->share(function ($c) {
+        $c['server'] = $c->share(function ($c) use ($symfttpd) {
             /** @var $config \Symfttpd\Config */
             $config = $c['config'];
 
-            $server = new \Symfttpd\Server\Server();
-            $server->configure($config, $c['project']);
+            $server = $symfttpd->getServer($config->get('server_type'));
 
-            if (null == $cmd = $config->get('server_cmd')) {
-                // Try to guess the executable command of the server.
-                if (null == $cmd = $c['finder']->find($server->getType())) {
-                    throw new ExecutableNotFoundException($server->getType().' executable not found.');
-                }
+            if (!$config->has('server_cmd')) {
+                $config->set('server_cmd', $c['finder']->find($server->getName()));
             }
 
-            $server->setExecutable($cmd);
+            $server->configure($config, $c['project']);
             $server->setGateway($c['gateway']);
             $server->setProcessBuilder($c['process_builder']);
             $server->setLogger($c['logger']);
@@ -180,29 +178,12 @@ class Application extends BaseApplication
             return $server;
         });
 
-        $c['supported_gateways'] = array(
-            \Symfttpd\Gateway\Fastcgi::TYPE_FASTCGI,
-            \Symfttpd\Gateway\PhpFpm::TYPE_PHPFPM,
-        );
-
-        $c['gateway'] = $c->share(function ($c) {
+        $c['gateway'] = $c->share(function ($c) use ($symfttpd) {
             /** @var $config \Symfttpd\Config */
             $config = $c['config'];
-            $type = $config->get('gateway_type', 'fastcgi');
-
-            if (!in_array($type, $c['supported_gateways'])) {
-                throw new \InvalidArgumentException(sprintf('"%s" gateway is not supported.', $type));
-            }
-
-            $mapping = array(
-                \Symfttpd\Gateway\Fastcgi::TYPE_FASTCGI => '\Symfttpd\Gateway\Fastcgi',
-                \Symfttpd\Gateway\PhpFpm::TYPE_PHPFPM   => '\Symfttpd\Gateway\PhpFpm',
-            );
-
-            $class = $mapping[$type];
 
             /** @var \Symfttpd\Gateway\GatewayInterface $gateway */
-            $gateway = new $class();
+            $gateway = $symfttpd->getGateway($config->get('gateway_type', 'fastcgi'));
 
             // Guess the gateway command if it is not porvided.
             if (!$config->has('gateway_cmd')) {

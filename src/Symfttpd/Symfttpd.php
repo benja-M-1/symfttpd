@@ -56,4 +56,24 @@ class Symfttpd
     {
         $this->gateways[$gateway->getName()] = $gateway;
     }
+
+    /**
+     * @param $name
+     *
+     * @return ServerInterface
+     */
+    public function getServer($name)
+    {
+        return $this->servers[$name];
+    }
+
+    /**
+     * @param $name
+     *
+     * @return GatewayInterface
+     */
+    public function getGateway($name)
+    {
+        return $this->gateways[$name];
+    }
 }

@@ -57,16 +57,17 @@ abstract class Server implements ServerInterface
     public function configure(Config $config, ProjectInterface $project)
     {
         $baseDir = $config->get('symfttpd_dir', getcwd().'/symfttpd');
+        $logDir = $config->get('server_log_dir', $baseDir .'/log');
 
         $this->bind($config->get('server_address', '127.0.0.1'), $config->get('server_port', '4042'));
 
-        $logDir = $config->get('server_log_dir', $baseDir .'/log');
+        $this->config['executable']       = $config->get('server_cmd');
+        $this->config['documentRoot']     = $project->getWebDir();
+        $this->config['indexFile']        = $project->getIndexFile();
         $this->config['errorLog']         = $logDir . '/' . $config->get('server_error_log', 'error.log');
         $this->config['accessLog']        = $logDir . '/' . $config->get('server_access_log', 'access.log');
         $this->config['tempPath']         = $baseDir.'/tmp';
         $this->config['pidfile']          = $baseDir . '/' . $config->get('server_pidfile', $this->getName().'.pid');
-        $this->config['documentRoot']     = $project->getWebDir();
-        $this->config['indexFile']        = $project->getIndexFile();
         $this->config['allowedDirs']      = $config->get('project_readable_dirs', $project->getDefaultReadableDirs());
         $this->config['allowedFiles']     = $config->get('project_readable_files', $project->getDefaultReadableFiles());
         $this->config['executableFiles']  = $config->get('project_readable_phpfiles', $project->getDefaultExecutableFiles());

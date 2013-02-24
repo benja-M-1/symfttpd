@@ -73,7 +73,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('server_cmd')
                     ->info('The command to use to run the server.')
-                    ->defaultNull()
                 ->end()
                 ->scalarNode('server_pidfile')
                     ->info('The pidfile stores the PID of the server process.')
