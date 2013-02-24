@@ -108,7 +108,7 @@ class Configuration implements ConfigurationInterface
         $node
             ->children()
                 ->scalarNode('project_type')
-                    ->defaultValue('php')
+                    ->defaultNull()
                 ->end()
                 ->scalarNode('project_version')
                     ->defaultNull()

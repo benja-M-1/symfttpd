@@ -12,7 +12,6 @@ server.modules = (
 
 {% block server %}
 server.document-root  = "{{ server.documentRoot }}"
-server.indexfiles     = ("index.php", "index.html", "index.htm", "default.htm")
 server.port           = {{ server.port }}
 {%- if server.address is not null -%}
 server.bind           = "{{ server.address }}"
