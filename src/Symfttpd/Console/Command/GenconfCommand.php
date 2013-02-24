@@ -15,7 +15,6 @@ use Symfttpd\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfttpd\Configuration\Exception\ConfigurationException;
 
 /**
  * GenconfCommand class.
@@ -84,7 +83,7 @@ EOT
                 $baseOutput->write($container['generator']->generate($server));
             }
 
-        } catch (ConfigurationException $e) {
+        } catch (\RuntimeException $e) {
             $output->writeln('<error>An error occurred while file generation.</error>');
             $output->writeln('<error>'.$e->getMessage().'</error>');
 
