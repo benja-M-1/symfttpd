@@ -18,7 +18,10 @@ title: Symfttpd
             <div class="span6">
         {% endif %}
             <h2><a href="{{ site.url }}{{ post.url }}">{{ post.title }}</a></h2>
-            <div><i class="icon-time"></i> {{ post.date | date_to_string }}</div>
+            <div>
+                <i class="icon-time"></i> {{ post.date | date_to_string }}
+                <i class="icon-comments"></i> <a href="{{ site.url }}{{ post.url }}#disqus_thread">Comments</a>
+            </div>
             <p>{{ post.content | truncate:200 }}</p>
             <a href="{{ site.url }}{{ post.url }}">Read</a>
         </div>
