@@ -42,6 +42,11 @@ abstract class Server implements ServerInterface
     protected $logger;
 
     /**
+     * @var array
+     */
+    protected $config = array();
+
+    /**
      * Configure the server.
      *
      * @param \Symfttpd\Config                   $config
