@@ -24,6 +24,13 @@ use Symfttpd\Project\ProjectInterface;
 interface ServerInterface extends ProcessAwareInterface
 {
     /**
+     * Return the name of the server
+     *
+     * @return mixed
+     */
+    public function getName();
+
+    /**
      * Run the server command to start it.
      *
      * @param \Symfttpd\ConfigurationGenerator $generator
@@ -62,97 +69,6 @@ interface ServerInterface extends ProcessAwareInterface
      * @param null $port
      */
     public function bind($address, $port = null);
-
-    /**
-     * Return the type of the server, e.g. lighttpd or nginx.
-     *
-     * @return mixed
-     */
-    public function getType();
-
-    /**
-     * Return the bounded address of the server e.g. 127.0.0.1.
-     *
-     * @return string
-     */
-    public function getAddress();
-
-    /**
-     * Return the bounded port of the server.
-     *
-     * @return string
-     */
-    public function getPort();
-
-    /**
-     * Return the executable used to run the server, e.g. /usr/bin/lighttpd.
-     *
-     * @return string
-     */
-    public function getExecutable();
-
-    /**
-     * Return the document root of the application.
-     *
-     * @return string
-     */
-    public function getDocumentRoot();
-
-    /**
-     * Return the index file of the application.
-     *
-     * @return string
-     */
-    public function getIndexFile();
-
-    /**
-     * Return the pidfile of the server.
-     *
-     * @return string
-     */
-    public function getPidfile();
-
-    /**
-     * Return the access log file used by the server.
-     *
-     * @return string
-     */
-    public function getAccessLog();
-
-    /**
-     * Return the error log file used by the server.
-     *
-     * @return string
-     */
-    public function getErrorLog();
-
-    /**
-     * Return the list of files that the server can execute e.g. app.php.
-     *
-     * @return array
-     */
-    public function getExecutableFiles();
-
-    /**
-     * Return the list of directories that the server allow access e.g. uploads.
-     *
-     * @return array
-     */
-    public function getAllowedDirs();
-
-    /**
-     * Return the list that the server can read e.g. favicon.ico.
-     *
-     * @return array
-     */
-    public function getAllowedFiles();
-
-    /**
-     * Return the list of directories where files should not be executed e.g. uploads.
-     *
-     * @return array
-     */
-    public function getUnexecutableDirs();
 
     /**
      * Return the gateway instance used by the server e.g. php-fpm, fastcgi.

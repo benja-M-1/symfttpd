@@ -24,14 +24,8 @@ use Symfttpd\Server\ServerInterface;
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class Server implements ServerInterface
+abstract class Server implements ServerInterface
 {
-    /**
-     * Defines supported types of server.
-     */
-    const TYPE_LIGHTTPD = 'lighttpd';
-    const TYPE_NGINX    = 'nginx';
-
     /**
      * @var \Symfttpd\Gateway\GatewayInterface
      */
@@ -47,21 +41,6 @@ class Server implements ServerInterface
      */
     protected $logger;
 
-    protected $type;
-    protected $address;
-    protected $port;
-    protected $executable;
-    protected $pidfile;
-    protected $errorLog;
-    protected $accessLog;
-    protected $documentRoot;
-    protected $indexFile;
-    protected $allowedDirs = array();
-    protected $allowedFiles = array();
-    protected $executableFiles = array();
-    protected $unexecutableDirs = array();
-    protected $tempPath;
-
     /**
      * Configure the server.
      *
@@ -74,38 +53,19 @@ class Server implements ServerInterface
     {
         $baseDir = $config->get('symfttpd_dir', getcwd().'/symfttpd');
 
-        $this->tempPath = $baseDir.'/tmp';
-
-        $this->setType($config->get('server_type'));
-
         $this->bind($config->get('server_address', '127.0.0.1'), $config->get('server_port', '4042'));
 
-        $this->pidfile = $baseDir . '/' . $config->get('server_pidfile', $this->getType().'.pid');
-
-        // Configure server logging
         $logDir = $config->get('server_log_dir', $baseDir .'/log');
-        $this->errorLog  = $logDir . '/' . $config->get('server_error_log', 'error.log');
-        $this->accessLog = $logDir . '/' . $config->get('server_access_log', 'access.log');
-
-        // Configure project relative directories and files
-        $this->documentRoot     = $project->getWebDir();
-        $this->indexFile        = $project->getIndexFile();
-        $this->allowedDirs      = $config->get('project_readable_dirs', $project->getDefaultReadableDirs());
-        $this->allowedFiles     = $config->get('project_readable_files', $project->getDefaultReadableFiles());
-        $this->executableFiles  = $config->get('project_readable_phpfiles', $project->getDefaultExecutableFiles());
-        $this->unexecutableDirs = $config->get('project_nophp', array());
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function isSupported($type)
-    {
-        $ref = new \ReflectionClass($this);
-
-        return in_array($type, $ref->getConstants());
+        $this->config['errorLog']         = $logDir . '/' . $config->get('server_error_log', 'error.log');
+        $this->config['accessLog']        = $logDir . '/' . $config->get('server_access_log', 'access.log');
+        $this->config['tempPath']         = $baseDir.'/tmp';
+        $this->config['pidfile']          = $baseDir . '/' . $config->get('server_pidfile', $this->getName().'.pid');
+        $this->config['documentRoot']     = $project->getWebDir();
+        $this->config['indexFile']        = $project->getIndexFile();
+        $this->config['allowedDirs']      = $config->get('project_readable_dirs', $project->getDefaultReadableDirs());
+        $this->config['allowedFiles']     = $config->get('project_readable_files', $project->getDefaultReadableFiles());
+        $this->config['executableFiles']  = $config->get('project_readable_phpfiles', $project->getDefaultExecutableFiles());
+        $this->config['unexecutableDirs'] = $config->get('project_nophp', array());
     }
 
     /**
@@ -113,8 +73,8 @@ class Server implements ServerInterface
      */
     public function bind($address, $port = null)
     {
-        $this->address = $address;
-        $this->port = $port;
+        $this->options['address'] = $address;
+        $this->options['port']    = $port;
     }
 
     /**
@@ -133,7 +93,7 @@ class Server implements ServerInterface
         }
 
         if (null !== $this->logger) {
-            $this->logger->debug("{$this->getType()} started.");
+            $this->logger->debug("{$this->getName()} started.");
         }
     }
 
@@ -146,7 +106,7 @@ class Server implements ServerInterface
         \Symfttpd\Utils\PosixTools::killPid($this->getPidfile());
 
         if (null !== $this->logger) {
-            $this->logger->debug("{$this->getType()} stopped.");
+            $this->logger->debug("{$this->getName()} stopped.");
         }
     }
 
@@ -166,149 +126,22 @@ class Server implements ServerInterface
      *
      * @return array
      * @throws \RuntimeException
+     * @todo Move to each server class and make it abstract
      */
     protected function getCommandLineArguments(ConfigurationGenerator $generator)
     {
-        switch ($this->getType()) {
-            case self::TYPE_LIGHTTPD:
-                $arguments = array($this->getExecutable(), '-f', $generator->dump($this, true));
+        switch ($this->getName()) {
+            case 'lighttpd':
+                $arguments = array($this->options['executable'], '-f', $generator->dump($this, true));
                 break;
-            case self::TYPE_NGINX:
-                $arguments = array($this->getExecutable(), '-c', $generator->dump($this, true));
+            case 'nginx':
+                $arguments = array($this->options['executable'], '-c', $generator->dump($this, true));
                 break;
             default:
                 throw new \RuntimeException('The type of the server must be provided.');
         }
 
         return $arguments;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Set the type of the server.
-     *
-     * @param string $type
-     *
-     * @throws \RuntimeException
-     */
-    public function setType($type)
-    {
-        if (!$this->isSupported($type)) {
-            throw new \RuntimeException(sprintf("The provided type of server (%s) is not supported, only %s or %s are available.", $type, self::TYPE_LIGHTTPD, self::TYPE_NGINX));
-        }
-
-        $this->type = $type;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPort()
-    {
-        return $this->port;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getExecutable()
-    {
-        return $this->executable;
-    }
-
-    /**
-     * @param string $cmd The executable used to run the server e.g. /usr/bin/lighttpd
-     */
-    public function setExecutable($cmd)
-    {
-        $this->executable = $cmd;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDocumentRoot()
-    {
-        return $this->documentRoot;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getIndexFile()
-    {
-        return $this->indexFile;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPidfile()
-    {
-        return $this->pidfile;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAccessLog()
-    {
-        return $this->accessLog;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getErrorLog()
-    {
-        return $this->errorLog;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getExecutableFiles()
-    {
-        return $this->executableFiles;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAllowedDirs()
-    {
-        return $this->allowedDirs;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAllowedFiles()
-    {
-        return $this->allowedFiles;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUnexecutableDirs()
-    {
-        return $this->unexecutableDirs;
     }
 
     /**
@@ -367,15 +200,5 @@ class Server implements ServerInterface
     public function getLogger()
     {
         return $this->logger;
-    }
-
-    /**
-     * Return the temporary path
-     *
-     * @return string
-     */
-    public function getTempPath()
-    {
-      return $this->tempPath;
     }
 }
