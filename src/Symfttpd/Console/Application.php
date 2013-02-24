@@ -282,7 +282,10 @@ class Application extends BaseApplication
         $commands[] = new InitCommand();
         $commands[] = new GenconfCommand();
         $commands[] = new SpawnCommand();
-        $commands[] = new SelfupdateCommand();
+
+        if (strpos($this->getExecutable(), 'phar')) {
+            $commands[] = new SelfupdateCommand();
+        }
 
         return $commands;
     }
@@ -334,5 +337,21 @@ class Application extends BaseApplication
         $helperSet->set(new DialogHelper(), 'dialog');
 
         return $helperSet;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getExecutable()
+    {
+        $args = $_SERVER['argv'];
+        $executable = reset($args);
+
+        if (strpos($executable, 'phar')) {
+            $executable = "php $executable";
+        }
+
+        return $executable;
     }
 }
