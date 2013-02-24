@@ -24,6 +24,14 @@ class PhpFpm extends BaseGateway
     const TYPE_PHPFPM = 'php-fpm';
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'php-fpm';
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getType()

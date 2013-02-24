@@ -23,9 +23,17 @@ use Symfttpd\ProcessAwareInterface;
 interface GatewayInterface extends ProcessAwareInterface
 {
     /**
+     * Return the name of the gateway.
+     *
+     * @return string
+     */
+    public function getName();
+
+    /**
      * Return the type of gateway.
      *
      * @return string
+     * @deprecated use getName instead
      */
     public function getType();
 
