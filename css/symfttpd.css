@@ -60,3 +60,13 @@ footer {
     padding-top: 10px;
     min-height: 50px;
 }
+
+#releases thead th,
+#releases tbody td {
+    text-align: center;
+}
+
+#releases tbody tr td:last-child {
+    text-align: right;
+    width: 170px;
+}
