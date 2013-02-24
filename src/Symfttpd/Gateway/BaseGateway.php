@@ -34,12 +34,10 @@ abstract class BaseGateway implements GatewayInterface
      */
     protected $logger;
 
-    protected $executable;
-    protected $errorLog;
-    protected $pidfile;
-    protected $socket;
-    protected $user;
-    protected $group;
+    /**
+     * @var array
+     */
+    protected $config;
 
     /**
      * @param \Symfttpd\Config $config
@@ -51,76 +49,16 @@ abstract class BaseGateway implements GatewayInterface
         $baseDir = $config->get('symfttpd_dir', getcwd().'/symfttpd');
 
         // Create an id for the socket file
-        $id = $this->getType().time();
+        $id = $this->getName().time();
 
-        $this->executable  = $config->get('gateway_cmd', $config->get('php_cgi_cmd'));
-        $this->errorLog    = $config->get('gateway_error_log', "$baseDir/log/{$this->getType()}-error.log");
-        $this->pidfile     = $config->get('gateway_pidfile', "$baseDir/symfttpd-{$this->getType()}.pid");
-        $this->socket      = $config->get('gateway_socket', "$baseDir/symfttpd-{$id}.sock");
+        $this->options['executable'] = $config->get('gateway_cmd', $config->get('php_cgi_cmd'));
+        $this->options['errorLog']   = $config->get('gateway_error_log', "$baseDir/log/{$this->getName()}-error.log");
+        $this->options['pidfile']    = $config->get('gateway_pidfile', "$baseDir/symfttpd-{$this->getName()}.pid");
+        $this->options['socket']     = $config->get('gateway_socket', "$baseDir/symfttpd-{$id}.sock");
 
         $group = posix_getgrgid(posix_getgid());
-        $this->group = $group['name'];
-        $this->user  = get_current_user();
-    }
-
-    /**
-     * @param $command
-     */
-    public function setExecutable($command)
-    {
-        $this->executable = $command;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getExecutable()
-    {
-        return $this->executable;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPidfile()
-    {
-        return $this->pidfile;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSocket()
-    {
-        return $this->socket;
-    }
-
-    /**
-     * @return string
-     */
-    public function getErrorLog()
-    {
-        return $this->errorLog;
-    }
-
-    /**
-     * Return the name of the user.
-     *
-     * @return string
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * Return the name of the user's group
-     *
-     * @return mixed
-     */
-    public function getGroup()
-    {
-        return $this->group;
+        $this->options['group'] = $group['name'];
+        $this->options['user']  = get_current_user();
     }
 
     /**
@@ -153,7 +91,7 @@ abstract class BaseGateway implements GatewayInterface
     public function start(ConfigurationGenerator $generator)
     {
         // Create the socket file first.
-        touch($this->getSocket());
+        touch($this->options['socket']);
 
         $process = $this->getProcessBuilder()
             ->setArguments($this->getCommandLineArguments($generator))
@@ -166,7 +104,7 @@ abstract class BaseGateway implements GatewayInterface
         }
 
         if (null !== $this->logger) {
-            $this->logger->debug("{$this->getType()} started.");
+            $this->logger->debug("{$this->getName()} started.");
         }
     }
 
@@ -178,7 +116,7 @@ abstract class BaseGateway implements GatewayInterface
         \Symfttpd\Utils\PosixTools::killPid($this->getPidfile());
 
         if (null !== $this->logger) {
-            $this->logger->debug("{$this->getType()} stopped.");
+            $this->logger->debug("{$this->getName()} stopped.");
         }
     }
 

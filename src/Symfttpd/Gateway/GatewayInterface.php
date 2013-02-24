@@ -30,41 +30,12 @@ interface GatewayInterface extends ProcessAwareInterface
     public function getName();
 
     /**
-     * Return the type of gateway.
-     *
-     * @return string
-     * @deprecated use getName instead
-     */
-    public function getType();
-
-    /**
      * Configure the gateway with settings of the
      * Symfttpd configuration file.
      *
      * @param \Symfttpd\Config $config
      */
     public function configure(Config $config);
-
-    /**
-     * Return the executable used to run the gateway.
-     *
-     * @return String
-     */
-    public function getExecutable();
-
-    /**
-     * Return the socket of the gateway used by the server.
-     *
-     * @return string
-     */
-    public function getSocket();
-
-    /**
-     * The pidfile is used to kill the process.
-     *
-     * @return string
-     */
-    public function getPidfile();
 
     /**
      * Start the gateway.

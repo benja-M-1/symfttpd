@@ -21,8 +21,6 @@ use Symfttpd\ConfigurationGenerator;
  */
 class PhpFpm extends BaseGateway
 {
-    const TYPE_PHPFPM = 'php-fpm';
-
     /**
      * @return string
      */
@@ -34,16 +32,8 @@ class PhpFpm extends BaseGateway
     /**
      * {@inheritdoc}
      */
-    public function getType()
-    {
-        return self::TYPE_PHPFPM;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getCommandLineArguments(ConfigurationGenerator $generator)
     {
-        return array($this->getExecutable(), '-y', $generator->dump($this, true));
+        return array($this->options['executable'], '-y', $generator->dump($this, true));
     }
 }

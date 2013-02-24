@@ -25,22 +25,12 @@ use Symfttpd\ConfigurationGenerator;
  */
 class Fastcgi extends BaseGateway
 {
-    const TYPE_FASTCGI = 'fastcgi';
-
     /**
      * @return string
      */
     public function getName()
     {
         return 'fastcgi';
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return self::TYPE_FASTCGI;
     }
 
     /**
