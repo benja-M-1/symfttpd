@@ -12,25 +12,25 @@
 namespace Symfttpd;
 
 /**
- * Config handles the configuration of Symfttpd.
+ * Container for a set of options.
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class Config implements \IteratorAggregate, \ArrayAccess
+class Options implements \IteratorAggregate, \ArrayAccess
 {
     /**
      * @var array
      */
-    protected $config = array();
+    protected $options = array();
 
     /**
      * Constructor.
      *
-     * @param array $config
+     * @param array $options
      */
-    public function __construct($config = array())
+    public function __construct($options = array())
     {
-        $this->config = $config;
+        $this->options = $options;
     }
 
     /**
@@ -40,19 +40,19 @@ class Config implements \IteratorAggregate, \ArrayAccess
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->config);
+        return new \ArrayIterator($this->options);
     }
 
     /**
-     * Add new entry in the config.
+     * Add new entry in the options.
      * Do not use array_merge as it rewrites the keys.
      *
-     * @param array $config
+     * @param array $options
      */
-    public function add(array $config)
+    public function add(array $options)
     {
-        if (false == empty($config)) {
-            $this->config = $this->config + $config;
+        if (false == empty($options)) {
+            $this->options = $this->options + $options;
         }
     }
 
@@ -63,15 +63,15 @@ class Config implements \IteratorAggregate, \ArrayAccess
      */
     public function all()
     {
-        return $this->config;
+        return $this->options;
     }
 
     /**
-     * Clear the config.
+     * Clear the options.
      */
     public function clear()
     {
-        $this->config = array();
+        $this->options = array();
     }
 
     /**
@@ -84,7 +84,7 @@ class Config implements \IteratorAggregate, \ArrayAccess
     public function get($name, $default = null)
     {
         if ($this->has($name)) {
-            return $this->config[$name];
+            return $this->options[$name];
         }
 
         return $default;
@@ -98,28 +98,28 @@ class Config implements \IteratorAggregate, \ArrayAccess
      */
     public function has($name)
     {
-        return array_key_exists($name, $this->config) && false === empty($this->config[$name]) ;
+        return array_key_exists($name, $this->options) && false === empty($this->options[$name]) ;
     }
 
     /**
-     * Merge config with existing one.
+     * Merge options with existing one.
      *
-     * @param array $config
+     * @param array $options
      */
-    public function merge(array $config)
+    public function merge(array $options)
     {
-        $this->config = array_merge($this->config, $config);
+        $this->options = array_merge($this->options, $options);
     }
 
     /**
-     * Remove an entry of the config.
+     * Remove an entry of the options.
      *
      * @param $name
      */
     public function remove($name)
     {
         if ($this->has($name)) {
-            unset($this->config[$name]);
+            unset($this->options[$name]);
         }
     }
 
@@ -131,7 +131,7 @@ class Config implements \IteratorAggregate, \ArrayAccess
      */
     public function set($name, $value)
     {
-        $this->config[$name] = $value;
+        $this->options[$name] = $value;
     }
 
     /**
@@ -155,7 +155,7 @@ class Config implements \IteratorAggregate, \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        $this->get($offset);
+        return $this->get($offset);
     }
 
     /**
