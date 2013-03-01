@@ -27,7 +27,7 @@ use Symfttpd\Console\Command\SelfupdateCommand;
 use Symfttpd\Console\Command\SpawnCommand;
 use Symfttpd\Console\Helper\DialogHelper;
 use Symfttpd\Options;
-use Symfttpd\Configuration;
+use Symfttpd\SymfttpdConfiguration;
 use Symfttpd\ConfigurationGenerator;
 use Symfttpd\Exception\ExecutableNotFoundException;
 use Symfttpd\Guesser\Checker\Symfony2Checker;
@@ -85,7 +85,7 @@ class Application extends BaseApplication
         $c['symfttpd_file'] = $c->share(function ($c) {
             $file = new SymfttpdFile();
             $file->setProcessor(new Processor());
-            $file->setConfiguration(new Configuration());
+            $file->setConfiguration(new SymfttpdConfiguration());
 
             return $file;
         });

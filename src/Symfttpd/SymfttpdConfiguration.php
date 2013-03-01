@@ -16,11 +16,11 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Configuration description
+ * SymfttpdConfiguration description
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class Configuration implements ConfigurationInterface
+class SymfttpdConfiguration implements ConfigurationInterface
 {
     /**
      * Generates the configuration tree builder.
