@@ -48,7 +48,7 @@ class Fastcgi extends BaseGateway
     {
         // Fastcgi is run by Lighttpd we don't need to start a process.
         if (null !== $this->logger) {
-            $this->logger->debug("{$this->getType()} started.");
+            $this->logger->debug("{$this->getName()} started.");
         }
     }
 
@@ -58,7 +58,7 @@ class Fastcgi extends BaseGateway
     public function stop()
     {
         if (null !== $this->logger) {
-            $this->logger->debug("{$this->getType()} stopped.");
+            $this->logger->debug("{$this->getName()} stopped.");
         }
     }
 }
