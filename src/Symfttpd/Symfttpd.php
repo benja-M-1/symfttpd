@@ -76,4 +76,20 @@ class Symfttpd
     {
         return $this->gateways[$name];
     }
+
+    /**
+     * @return array
+     */
+    public function getGatewayNames()
+    {
+        return array_keys($this->gateways);
+    }
+
+    /**
+     * @return array
+     */
+    public function getServerNames()
+    {
+        return array_keys($this->servers);
+    }
 }
