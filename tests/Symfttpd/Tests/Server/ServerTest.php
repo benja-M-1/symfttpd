@@ -12,7 +12,7 @@
 namespace Symfttpd\Tests\Server;
 
 use Symfttpd\Server\Server;
-use Symfttpd\Config;
+use Symfttpd\Options;
 
 /**
  * ServerTest class
@@ -48,7 +48,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
     public function testConfigureTheServer()
     {
         $server = new Server();
-        $config = new Config(array('server_type' => 'lighttpd'));
+        $config = new Options(array('server_type' => 'lighttpd'));
         $project = $this->getMock('\Symfttpd\Project\ProjectInterface');
 
         try {
@@ -70,7 +70,7 @@ class ServerTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('\RuntimeException', "The provided type of server ($type) is not supported, only lighttpd or nginx are available.");
 
         $server = new Server();
-        $server->configure(new Config(array('server_type' => $type)), $this->getMock('\Symfttpd\Project\ProjectInterface'));
+        $server->configure(new Options(array('server_type' => $type)), $this->getMock('\Symfttpd\Project\ProjectInterface'));
     }
 
     public function getUnsupportedType()

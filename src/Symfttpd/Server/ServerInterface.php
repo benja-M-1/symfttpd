@@ -11,7 +11,7 @@
 
 namespace Symfttpd\Server;
 
-use Symfttpd\Config;
+use Symfttpd\Options;
 use Symfttpd\ConfigurationGenerator;
 use Symfttpd\ProcessAwareInterface;
 use Symfttpd\Project\ProjectInterface;
@@ -59,10 +59,10 @@ interface ServerInterface extends ProcessAwareInterface
     /**
      * Configure the server.
      *
-     * @param \Symfttpd\Config                   $config
+     * @param \Symfttpd\Options                   $config
      * @param \Symfttpd\Project\ProjectInterface $project
      */
-    public function configure(Config $config, ProjectInterface $project);
+    public function configure(Options $config, ProjectInterface $project);
 
     /**
      * @param      $address

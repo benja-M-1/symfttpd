@@ -11,7 +11,7 @@
 
 namespace Symfttpd\Tests\Mock;
 
-use Symfttpd\Config;
+use Symfttpd\Options;
 use Symfttpd\Project\BaseProject;
 
 /**
@@ -24,7 +24,7 @@ class MockProject extends BaseProject
 {
     protected $filesystem;
 
-    public function __construct(Config $options, $path = null)
+    public function __construct(Options $options, $path = null)
     {
         if (null == $path) {
             $path = sys_get_temp_dir().'/symfttpd-project-test';

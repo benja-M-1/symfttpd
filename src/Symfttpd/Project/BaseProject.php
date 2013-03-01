@@ -47,14 +47,18 @@ abstract class BaseProject implements ProjectInterface
     protected $rootDir;
 
     /**
-     * @var \Symfttpd\Config
+     * @var \Symfttpd\Options
      */
-    public $config;
+    public $options;
 
-    public function __construct(\Symfttpd\Config $config, $path = null)
+    /**
+     * @param \Symfttpd\Options $options
+     * @param null              $path
+     */
+    public function __construct(\Symfttpd\Options $options, $path = null)
     {
         $this->rootDir = $path ?: getcwd();
-        $this->config  = $config;
+        $this->options = $options;
     }
 
     /**

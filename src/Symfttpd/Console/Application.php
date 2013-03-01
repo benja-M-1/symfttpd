@@ -26,7 +26,7 @@ use Symfttpd\Console\Command\InitCommand;
 use Symfttpd\Console\Command\SelfupdateCommand;
 use Symfttpd\Console\Command\SpawnCommand;
 use Symfttpd\Console\Helper\DialogHelper;
-use Symfttpd\Config;
+use Symfttpd\Options;
 use Symfttpd\Configuration;
 use Symfttpd\ConfigurationGenerator;
 use Symfttpd\Exception\ExecutableNotFoundException;
@@ -91,7 +91,7 @@ class Application extends BaseApplication
         });
 
         $c['config'] = $c->share(function ($c) {
-            $config = new Config();
+            $config = new Options();
             $config->merge($c['symfttpd_file']->read());
 
             if (!$config->has('symfttpd_dir')) {
@@ -129,7 +129,7 @@ class Application extends BaseApplication
         });
 
         $c['project'] = $c->share(function ($c) {
-            /** @var $config \Symfttpd\Config */
+            /** @var $config \Symfttpd\Options */
             $config = $c['config'];
 
             if (!$config->has('project_type')) {
@@ -161,7 +161,7 @@ class Application extends BaseApplication
         });
 
         $c['server'] = $c->share(function ($c) use ($symfttpd) {
-            /** @var $config \Symfttpd\Config */
+            /** @var $config \Symfttpd\Options */
             $config = $c['config'];
 
             $server = $symfttpd->getServer($config->get('server_type'));
@@ -179,7 +179,7 @@ class Application extends BaseApplication
         });
 
         $c['gateway'] = $c->share(function ($c) use ($symfttpd) {
-            /** @var $config \Symfttpd\Config */
+            /** @var $config \Symfttpd\Options */
             $config = $c['config'];
 
             /** @var \Symfttpd\Gateway\GatewayInterface $gateway */

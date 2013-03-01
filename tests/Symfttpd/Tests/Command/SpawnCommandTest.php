@@ -12,7 +12,7 @@
 namespace Symfttpd\Tests\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfttpd\Config;
+use Symfttpd\Options;
 use Symfttpd\Server\Server;
 use Symfttpd\Console\Command\SpawnCommand;
 
@@ -58,7 +58,7 @@ class SpawnCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($process));
 
         $server = new Server();
-        $server->configure(new Config(array('server_type' => 'lighttpd', 'project_readable_phpfiles' => array('index.php'))), $this->getMock('\Symfttpd\Project\ProjectInterface'));
+        $server->configure(new Options(array('server_type' => 'lighttpd', 'project_readable_phpfiles' => array('index.php'))), $this->getMock('\Symfttpd\Project\ProjectInterface'));
         $server->setProcessBuilder($pb);
 
         $pimple = new \Pimple(array(
@@ -107,7 +107,7 @@ class SpawnCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($process));
 
         $server = new Server();
-        $server->configure(new Config(array('server_type' => 'lighttpd', 'project_readable_phpfiles' => array('index.php'))), $this->getMock('\Symfttpd\Project\ProjectInterface'));
+        $server->configure(new Options(array('server_type' => 'lighttpd', 'project_readable_phpfiles' => array('index.php'))), $this->getMock('\Symfttpd\Project\ProjectInterface'));
         $server->setProcessBuilder($pb);
 
         $application = new \Symfttpd\Console\Application();

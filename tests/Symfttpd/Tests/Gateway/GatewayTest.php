@@ -12,7 +12,7 @@
 namespace Symfttpd\Tests\Gateway;
 
 use Symfttpd\Tests\Mock\MockGateway;
-use Symfttpd\Config;
+use Symfttpd\Options;
 
 /**
  * PhpFpmTest description
@@ -24,7 +24,7 @@ class GatewayTest extends \PHPUnit_Framework_TestCase
     public function testConfigure()
     {
         $gateway = new MockGateway();
-        $gateway->configure(new Config(array('gateway_cmd' => '/usr/bin/php-fpm')));
+        $gateway->configure(new Options(array('gateway_cmd' => '/usr/bin/php-fpm')));
         $this->assertEquals('/usr/bin/php-fpm', $gateway->getExecutable());
     }
 }

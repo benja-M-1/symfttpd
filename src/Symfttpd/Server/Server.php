@@ -13,7 +13,7 @@ namespace Symfttpd\Server;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\ProcessBuilder;
-use Symfttpd\Config;
+use Symfttpd\Options;
 use Symfttpd\ConfigurationGenerator;
 use Symfttpd\Gateway\GatewayInterface;
 use Symfttpd\Project\ProjectInterface;
@@ -42,36 +42,38 @@ abstract class Server implements ServerInterface
     protected $logger;
 
     /**
-     * @var array
+     * @var Options
      */
-    protected $config = array();
+    public $options;
 
     /**
      * Configure the server.
      *
-     * @param \Symfttpd\Config                   $config
+     * @param \Symfttpd\Options                   $options
      * @param \Symfttpd\Project\ProjectInterface $project
      *
      * @throws \RuntimeException
      */
-    public function configure(Config $config, ProjectInterface $project)
+    public function configure(Options $options, ProjectInterface $project)
     {
-        $baseDir = $config->get('symfttpd_dir', getcwd().'/symfttpd');
-        $logDir = $config->get('server_log_dir', $baseDir .'/log');
+        $this->options = new Options();
 
-        $this->bind($config->get('server_address', '127.0.0.1'), $config->get('server_port', '4042'));
+        $baseDir = $options->get('symfttpd_dir', getcwd().'/symfttpd');
+        $logDir = $options->get('server_log_dir', $baseDir .'/log');
 
-        $this->config['executable']       = $config->get('server_cmd');
-        $this->config['documentRoot']     = $project->getWebDir();
-        $this->config['indexFile']        = $project->getIndexFile();
-        $this->config['errorLog']         = $logDir . '/' . $config->get('server_error_log', 'error.log');
-        $this->config['accessLog']        = $logDir . '/' . $config->get('server_access_log', 'access.log');
-        $this->config['tempPath']         = $baseDir.'/tmp';
-        $this->config['pidfile']          = $baseDir . '/' . $config->get('server_pidfile', $this->getName().'.pid');
-        $this->config['allowedDirs']      = $config->get('project_readable_dirs', $project->getDefaultReadableDirs());
-        $this->config['allowedFiles']     = $config->get('project_readable_files', $project->getDefaultReadableFiles());
-        $this->config['executableFiles']  = $config->get('project_readable_phpfiles', $project->getDefaultExecutableFiles());
-        $this->config['unexecutableDirs'] = $config->get('project_nophp', array());
+        $this->bind($options->get('server_address', '127.0.0.1'), $options->get('server_port', '4042'));
+
+        $this->options['executable']       = $options->get('server_cmd');
+        $this->options['documentRoot']     = $project->getWebDir();
+        $this->options['indexFile']        = $project->getIndexFile();
+        $this->options['errorLog']         = $logDir . '/' . $options->get('server_error_log', 'error.log');
+        $this->options['accessLog']        = $logDir . '/' . $options->get('server_access_log', 'access.log');
+        $this->options['tempPath']         = $baseDir.'/tmp';
+        $this->options['pidfile']          = $baseDir . '/' . $options->get('server_pidfile', $this->getName().'.pid');
+        $this->options['allowedDirs']      = $options->get('project_readable_dirs', $project->getDefaultReadableDirs());
+        $this->options['allowedFiles']     = $options->get('project_readable_files', $project->getDefaultReadableFiles());
+        $this->options['executableFiles']  = $options->get('project_readable_phpfiles', $project->getDefaultExecutableFiles());
+        $this->options['unexecutableDirs'] = $options->get('project_nophp', array());
     }
 
     /**
@@ -109,7 +111,7 @@ abstract class Server implements ServerInterface
     public function stop()
     {
         // Kill the current server process.
-        \Symfttpd\Utils\PosixTools::killPid($this->getPidfile());
+        \Symfttpd\Utils\PosixTools::killPid($this->options['pidfile']);
 
         if (null !== $this->logger) {
             $this->logger->debug("{$this->getName()} stopped.");

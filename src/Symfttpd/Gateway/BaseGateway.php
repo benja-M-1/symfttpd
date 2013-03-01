@@ -13,7 +13,7 @@ namespace Symfttpd\Gateway;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\ProcessBuilder;
-use Symfttpd\Config;
+use Symfttpd\Options;
 use Symfttpd\ConfigurationGenerator;
 use Symfttpd\Gateway\GatewayInterface;
 
@@ -35,26 +35,28 @@ abstract class BaseGateway implements GatewayInterface
     protected $logger;
 
     /**
-     * @var array
+     * @var Options
      */
-    protected $config;
+    public $options;
 
     /**
-     * @param \Symfttpd\Config $config
+     * @param \Symfttpd\Options $options
      *
-     * @return \Symfttpd\Config|void
+     * @return \Symfttpd\Options|void
      */
-    public function configure(Config $config)
+    public function configure(Options $options)
     {
-        $baseDir = $config->get('symfttpd_dir', getcwd().'/symfttpd');
+        $this->options = new Options();
+
+        $baseDir = $options->get('symfttpd_dir', getcwd().'/symfttpd');
 
         // Create an id for the socket file
         $id = $this->getName().time();
 
-        $this->options['executable'] = $config->get('gateway_cmd', $config->get('php_cgi_cmd'));
-        $this->options['errorLog']   = $config->get('gateway_error_log', "$baseDir/log/{$this->getName()}-error.log");
-        $this->options['pidfile']    = $config->get('gateway_pidfile', "$baseDir/symfttpd-{$this->getName()}.pid");
-        $this->options['socket']     = $config->get('gateway_socket', "$baseDir/symfttpd-{$id}.sock");
+        $this->options['executable'] = $options->get('gateway_cmd', $options->get('php_cgi_cmd'));
+        $this->options['errorLog']   = $options->get('gateway_error_log', "$baseDir/log/{$this->getName()}-error.log");
+        $this->options['pidfile']    = $options->get('gateway_pidfile', "$baseDir/symfttpd-{$this->getName()}.pid");
+        $this->options['socket']     = $options->get('gateway_socket', "$baseDir/symfttpd-{$id}.sock");
 
         $group = posix_getgrgid(posix_getgid());
         $this->options['group'] = $group['name'];
@@ -113,7 +115,7 @@ abstract class BaseGateway implements GatewayInterface
      */
     public function stop()
     {
-        \Symfttpd\Utils\PosixTools::killPid($this->getPidfile());
+        \Symfttpd\Utils\PosixTools::killPid($this->options['pidfile']);
 
         if (null !== $this->logger) {
             $this->logger->debug("{$this->getName()} stopped.");

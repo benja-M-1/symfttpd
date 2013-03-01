@@ -11,7 +11,7 @@
 
 namespace Symfttpd\Gateway;
 
-use Symfttpd\Config;
+use Symfttpd\Options;
 use Symfttpd\ConfigurationGenerator;
 use Symfttpd\ProcessAwareInterface;
 
@@ -33,9 +33,9 @@ interface GatewayInterface extends ProcessAwareInterface
      * Configure the gateway with settings of the
      * Symfttpd configuration file.
      *
-     * @param \Symfttpd\Config $config
+     * @param \Symfttpd\Options $options
      */
-    public function configure(Config $config);
+    public function configure(Options $options);
 
     /**
      * Start the gateway.

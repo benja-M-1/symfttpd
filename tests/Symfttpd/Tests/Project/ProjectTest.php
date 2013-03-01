@@ -20,7 +20,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->project = new \Symfttpd\Tests\Mock\MockProject(new \Symfttpd\Config());
+        $this->project = new \Symfttpd\Tests\Mock\MockProject(new \Symfttpd\Options());
 
     }
     public function tearDown()
@@ -33,13 +33,13 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetPathException()
     {
-        $project = $this->getMockForAbstractClass('\\Symfttpd\\Project\\BaseProject', array(new \Symfttpd\Config()));
+        $project = $this->getMockForAbstractClass('\\Symfttpd\\Project\\BaseProject', array(new \Symfttpd\Options()));
         $project->setRootDir(__DIR__.'/foo/bar');
     }
 
     public function testGetRootDir()
     {
-        $project = $this->getMockForAbstractClass('\\Symfttpd\\Project\\BaseProject', array(new \Symfttpd\Config()));
+        $project = $this->getMockForAbstractClass('\\Symfttpd\\Project\\BaseProject', array(new \Symfttpd\Options()));
         $project->setRootDir(sys_get_temp_dir());
         $this->assertEquals(realpath(sys_get_temp_dir()), $project->getRootDir());
     }
