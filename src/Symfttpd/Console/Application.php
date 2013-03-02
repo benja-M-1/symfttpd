@@ -11,29 +11,15 @@
 
 namespace Symfttpd\Console;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\ExecutableFinder;
 use Symfttpd\Console\Command\GenconfCommand;
 use Symfttpd\Console\Command\InitCommand;
 use Symfttpd\Console\Command\SelfupdateCommand;
 use Symfttpd\Console\Command\SpawnCommand;
 use Symfttpd\Console\Helper\DialogHelper;
-use Symfttpd\Options;
-use Symfttpd\SymfttpdConfiguration;
-use Symfttpd\ConfigurationGenerator;
-use Symfttpd\Guesser\Checker\Symfony2Checker;
-use Symfttpd\Guesser\Checker\Symfony1Checker;
-use Symfttpd\Guesser\Exception\UnguessableException;
-use Symfttpd\Guesser\ProjectGuesser;
-use Symfttpd\Symfttpd;
-use Symfttpd\SymfttpdFile;
 
 /**
  * Application
@@ -52,9 +38,7 @@ class Application extends BaseApplication
      */
     public function __construct()
     {
-        $this->symfttpd = new Symfttpd();
-
-        parent::__construct('Symfttpd', Symfttpd::VERSION);
+        parent::__construct('Symfttpd', \Symfttpd\Symfttpd::VERSION);
 
         $this->container = $c = new \Pimple();
 
@@ -65,15 +49,15 @@ class Application extends BaseApplication
         });
 
         $c['symfttpd_file'] = $c->share(function ($c) {
-            $file = new SymfttpdFile();
-            $file->setProcessor(new Processor());
-            $file->setConfiguration(new SymfttpdConfiguration());
+            $file = new \Symfttpd\SymfttpdFile();
+            $file->setProcessor(new \Symfony\Component\Config\Definition\Processor());
+            $file->setConfiguration(new \Symfttpd\SymfttpdConfiguration());
 
             return $file;
         });
 
         $c['options'] = $c->share(function ($c) {
-            $options = new Options();
+            $options = new \Symfttpd\Options();
             $options->merge($c['symfttpd_file']->read());
 
             if (!$options->has('symfttpd_dir')) {
@@ -84,15 +68,15 @@ class Application extends BaseApplication
         });
 
         $c['project.guesser'] = $c->share(function ($c) {
-            $guesser = new ProjectGuesser();
-            $guesser->registerChecker(new Symfony1Checker());
-            $guesser->registerChecker(new Symfony2Checker());
+            $guesser = new \Symfttpd\Guesser\ProjectGuesser();
+            $guesser->registerChecker(new \Symfttpd\Guesser\Checker\Symfony1Checker());
+            $guesser->registerChecker(new \Symfttpd\Guesser\Checker\Symfony2Checker());
 
             return $guesser;
         });
 
         $c['finder'] = $c->share(function ($c) {
-            $finder = new ExecutableFinder();
+            $finder = new \Symfony\Component\Process\ExecutableFinder();
             $finder->addSuffix('');
 
             return $finder;
@@ -114,7 +98,7 @@ class Application extends BaseApplication
         });
 
         $c['filesystem'] = $c->share(function ($c) {
-            return new Filesystem();
+            return new \Symfony\Component\Filesystem\Filesystem();
         });
 
         $c['generator'] = $c->share(function ($c) {
@@ -140,7 +124,7 @@ class Application extends BaseApplication
             if (!$options->has('project_type')) {
                 try {
                     list($type, $version) = $c['project.guesser']->guess();
-                } catch (UnguessableException $e) {
+                } catch (\Symfttpd\Guesser\Exception\UnguessableException $e) {
                     $type = 'php';
                     $version = null;
                 }
@@ -208,7 +192,7 @@ class Application extends BaseApplication
 
             // Guess the gateway command if it is not porvided.
             if (!$options->has('gateway_cmd')) {
-                $options->set('gateway_cmd', $c['finder']->find($gateway->getType()));
+                $options->set('gateway_cmd', $c['finder']->find($gateway->getName()));
             }
 
             $gateway->configure($options);
@@ -226,14 +210,14 @@ class Application extends BaseApplication
         };
 
         $c['logger'] = $c->share(function ($c) {
-            $level = Logger::ERROR;
+            $level = \Monolog\Logger::ERROR;
 
             if (true === $c['debug']) {
-                $level = Logger::DEBUG;
+                $level = \Monolog\Logger::DEBUG;
             }
 
-            $logger = new Logger('symfttpd');
-            $logger->pushHandler(new StreamHandler($c['options']->get('symfttpd_dir').'/log/symfttpd.log', $level));
+            $logger = new \Monolog\Logger('symfttpd');
+            $logger->pushHandler(new \Monolog\Handler\StreamHandler($c['options']->get('symfttpd_dir').'/log/symfttpd.log', $level));
 
             return $logger;
         });
