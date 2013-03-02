@@ -11,10 +11,8 @@
 
 namespace Symfttpd\Server;
 
-use Symfttpd\ConfigurationGenerator;
-
 /**
- * Nginx description
+ * Nginx server
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
@@ -29,12 +27,9 @@ class Nginx extends Server
     }
 
     /**
-     * @param ConfigurationGenerator $generator
-     *
-     * @return array
-     * @throws \RuntimeException
+     * {@inheritdoc}
      */
-    protected function getCommandLineArguments(ConfigurationGenerator $generator)
+    protected function getCommandLineArguments()
     {
         return array($this->options['executable'], '-c', $generator->dump($this, true));
     }

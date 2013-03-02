@@ -96,7 +96,7 @@ abstract class BaseGateway implements GatewayInterface
         touch($this->options['socket']);
 
         $process = $this->getProcessBuilder()
-            ->setArguments($this->getCommandLineArguments($generator))
+            ->setArguments($this->getCommandLineArguments())
             ->getProcess();
 
         $process->run();
@@ -125,9 +125,7 @@ abstract class BaseGateway implements GatewayInterface
     /**
      * Return the parts of the command line to run the process.
      *
-     * @param \Symfttpd\ConfigurationGenerator $generator
-     *
-     * @return array
+     * @return mixed
      */
-    abstract protected function getCommandLineArguments(ConfigurationGenerator $generator);
+    abstract protected function getCommandLineArguments();
 }

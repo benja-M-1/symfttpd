@@ -11,10 +11,8 @@
 
 namespace Symfttpd\Server;
 
-use Symfttpd\ConfigurationGenerator;
-
 /**
- * Lighttpd description
+ * Lighttpd server
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
@@ -29,14 +27,10 @@ class Lighttpd extends Server
     }
 
     /**
-     * @param ConfigurationGenerator $generator
-     *
-     * @return array
-     * @throws \RuntimeException
+     * {@inheritdoc}
      */
-    protected function getCommandLineArguments(ConfigurationGenerator $generator)
+    protected function getCommandLineArguments()
     {
         return array($this->options['executable'], '-f', $generator->dump($this, true));
     }
-
 }

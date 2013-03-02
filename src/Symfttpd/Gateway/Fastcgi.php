@@ -12,10 +12,9 @@
 namespace Symfttpd\Gateway;
 
 use Symfttpd\Gateway\BaseGateway;
-use Symfttpd\ConfigurationGenerator;
 
 /**
- * Fastcgi gateway definition.
+ * FastCGI Gateway
  *
  * Fastcgi is mainly used with lighttpd. For the moment
  * we don't care about making it working with NGinx.
@@ -60,5 +59,13 @@ class Fastcgi extends BaseGateway
         if (null !== $this->logger) {
             $this->logger->debug("{$this->getName()} stopped.");
         }
+    }
+
+    /**
+     * {@inheritdoccom}
+     */
+    protected function getCommandLineArguments()
+    {
+        return array();
     }
 }

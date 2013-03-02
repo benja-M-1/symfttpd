@@ -59,7 +59,7 @@ abstract class Server implements ServerInterface
         $this->options = new Options();
 
         $baseDir = $options->get('symfttpd_dir', getcwd().'/symfttpd');
-        $logDir = $options->get('server_log_dir', $baseDir .'/log');
+        $logDir  = $options->get('server_log_dir', $baseDir .'/log');
 
         $this->bind($options->get('server_address', '127.0.0.1'), $options->get('server_port', '4042'));
 
@@ -68,7 +68,7 @@ abstract class Server implements ServerInterface
         $this->options['indexFile']        = $project->getIndexFile();
         $this->options['errorLog']         = $logDir . '/' . $options->get('server_error_log', 'error.log');
         $this->options['accessLog']        = $logDir . '/' . $options->get('server_access_log', 'access.log');
-        $this->options['tempPath']         = $baseDir.'/tmp';
+        $this->options['tempPath']         = $baseDir . '/tmp';
         $this->options['pidfile']          = $baseDir . '/' . $options->get('server_pidfile', $this->getName().'.pid');
         $this->options['allowedDirs']      = $options->get('project_readable_dirs', $project->getDefaultReadableDirs());
         $this->options['allowedFiles']     = $options->get('project_readable_files', $project->getDefaultReadableFiles());
@@ -91,7 +91,7 @@ abstract class Server implements ServerInterface
     public function start(ConfigurationGenerator $generator)
     {
         $process = $this->getProcessBuilder()
-            ->setArguments($this->getCommandLineArguments($generator))
+            ->setArguments($this->getCommandLineArguments())
             ->getProcess();
 
         $process->run();
@@ -121,21 +121,19 @@ abstract class Server implements ServerInterface
     /**
      * {@inheritdoc}
      */
-    public function restart(ConfigurationGenerator $generator)
+    public function restart()
     {
         $this->stop();
-        $this->start($generator);
+        $this->start();
     }
 
     /**
      * Return the command line executed by the process.
      *
-     * @param \Symfttpd\ConfigurationGenerator $generator
-     *
      * @return array
      * @throws \RuntimeException
      */
-    abstract protected function getCommandLineArguments(ConfigurationGenerator $generator);
+    abstract protected function getCommandLineArguments();
 
     /**
      * Set the gateway instance used by the server.

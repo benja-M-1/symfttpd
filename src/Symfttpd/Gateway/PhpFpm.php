@@ -12,10 +12,9 @@
 namespace Symfttpd\Gateway;
 
 use Symfttpd\Gateway\BaseGateway;
-use Symfttpd\ConfigurationGenerator;
 
 /**
- * PhpFpm description
+ * PHP FPM gateway
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
@@ -32,7 +31,7 @@ class PhpFpm extends BaseGateway
     /**
      * {@inheritdoc}
      */
-    protected function getCommandLineArguments(ConfigurationGenerator $generator)
+    protected function getCommandLineArguments()
     {
         return array($this->options['executable'], '-y', $generator->dump($this, true));
     }
