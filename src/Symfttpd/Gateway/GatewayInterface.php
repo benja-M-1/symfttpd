@@ -12,7 +12,6 @@
 namespace Symfttpd\Gateway;
 
 use Symfttpd\Options;
-use Symfttpd\ConfigurationGenerator;
 use Symfttpd\ProcessAwareInterface;
 
 /**
@@ -38,13 +37,18 @@ interface GatewayInterface extends ProcessAwareInterface
     public function configure(Options $options);
 
     /**
+     * @return Options
+     */
+    public function getOptions();
+
+    /**
      * Start the gateway.
      * @param \Symfttpd\ConfigurationGenerator $generator
      *
      * @return mixed
      * @throws \RuntimeException When the gateway failed to start.
      */
-    public function start(ConfigurationGenerator $generator);
+    public function start();
 
     /**
      * Stop the gateway.
@@ -52,4 +56,14 @@ interface GatewayInterface extends ProcessAwareInterface
      * @return mixed
      */
     public function stop();
+
+    /**
+     * @return string
+     */
+    public function getConfigurationFile();
+
+    /**
+     * @param string $file
+     */
+    public function setConfigurationFile($file);
 }

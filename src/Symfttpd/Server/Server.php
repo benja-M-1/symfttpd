@@ -12,10 +12,11 @@
 namespace Symfttpd\Server;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ProcessBuilder;
-use Symfttpd\Options;
-use Symfttpd\ConfigurationGenerator;
+use Symfttpd\EventDispatcher\Event\ServerEvent;
 use Symfttpd\Gateway\GatewayInterface;
+use Symfttpd\Options;
 use Symfttpd\Project\ProjectInterface;
 use Symfttpd\Server\ServerInterface;
 
@@ -26,6 +27,11 @@ use Symfttpd\Server\ServerInterface;
  */
 abstract class Server implements ServerInterface
 {
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    protected $dispatcher;
+
     /**
      * @var \Symfttpd\Gateway\GatewayInterface
      */
@@ -45,6 +51,19 @@ abstract class Server implements ServerInterface
      * @var Options
      */
     public $options;
+
+    /**
+     * @var string
+     */
+    public $configurationFile;
+
+    /**
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+     */
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
 
     /**
      * Configure the server.
@@ -88,8 +107,10 @@ abstract class Server implements ServerInterface
     /**
      * {@inheritdoc}
      */
-    public function start(ConfigurationGenerator $generator)
+    public function start()
     {
+        $this->dispatcher->dispatch('server.pre_start', new ServerEvent($this));
+
         $process = $this->getProcessBuilder()
             ->setArguments($this->getCommandLineArguments())
             ->getProcess();
@@ -103,6 +124,8 @@ abstract class Server implements ServerInterface
         if (null !== $this->logger) {
             $this->logger->debug("{$this->getName()} started.");
         }
+
+        $this->dispatcher->dispatch('server.post_start', new ServerEvent($this));
     }
 
     /**
@@ -191,5 +214,29 @@ abstract class Server implements ServerInterface
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    /**
+     * @param string $configurationFile
+     */
+    public function setConfigurationFile($configurationFile)
+    {
+        $this->configurationFile = $configurationFile;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfigurationFile()
+    {
+        return $this->configurationFile;
+    }
+
+    /**
+     * @return \Symfttpd\Options
+     */
+    public function getOptions()
+    {
+        return $this->options;
     }
 }

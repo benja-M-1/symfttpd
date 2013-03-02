@@ -1,7 +1,5 @@
-{% set server = subject %}
-
 worker_processes  2;
-pid {{ server.pidfile }};
+pid {{ pidfile }};
 
 {% block events %}
 events {
@@ -25,7 +23,7 @@ http {
     '"$http_range" "$sent_http_content_range"';
 
     client_header_timeout  3m;
-    client_body_temp_path  {{ server.tempPath }} 1 2;
+    client_body_temp_path  {{ tempPath }} 1 2;
     client_body_timeout    3m;
     send_timeout           3m;
 
@@ -55,31 +53,31 @@ http {
 
     {% block server %}
     server {
-        listen        {{ server.port }};
-        {%- if server.address is not null -%}
-            server_name   {{ server.address }};
+        listen        {{ port }};
+        {%- if address is not null -%}
+            server_name   {{ address }};
         {%- endif -%}
-        root          {{ server.documentRoot }};
+        root          {{ documentRoot }};
 
         # [ debug | info | notice | warn | error | crit ]
-        error_log  {{ server.errorLog }}  debug;
+        error_log  {{ errorLog }}  debug;
 
-        access_log    {{ server.accessLog }}  main;
+        access_log    {{ accessLog }}  main;
 
         # strip app.php/ prefix if it is present
-        rewrite ^/{{ server.indexFile|replace({'.php': ''}) }}\.php/?(.*)$ /$1 permanent;
+        rewrite ^/{{ indexFile|replace({'.php': ''}) }}\.php/?(.*)$ /$1 permanent;
 
         location / {
-            index {{ server.indexFile }};
+            index {{ indexFile }};
             try_files $uri @rewriteapp;
         }
 
         location @rewriteapp {
-            rewrite ^(.*)$ /{{ server.indexFile }}/$1 last;
+            rewrite ^(.*)$ /{{ indexFile }}/$1 last;
         }
 
-        location ~ ({{ server.executableFiles|join('|')|replace({'.php': ''}) }})\.php(/|$) {
-            fastcgi_pass unix:{{ server.gateway.socket|raw }};
+        location ~ ({{ executableFiles|join('|')|replace({'.php': ''}) }})\.php(/|$) {
+            fastcgi_pass unix:{{ gateway.options.socket|raw }};
             fastcgi_split_path_info ^(.+\.php)(/.*)$;
             {%- include 'nginx/fastcgi.conf.twig' -%}
         }

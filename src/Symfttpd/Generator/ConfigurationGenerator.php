@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Symfttpd;
+namespace Symfttpd\Generator;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class ConfigurationGenerator
+class ConfigurationGenerator implements ConfigurationGeneratorInterface
 {
     /**
      * @var \Twig_Environment
@@ -71,29 +71,19 @@ class ConfigurationGenerator
     }
 
     /**
-     * @param string $template
-     * @param array  $parameters
-     * @param string $filename
-     * @param bool   $force
-     *
-     * @return string
-     * @throws \RuntimeException
+     * {@inheritdoc}
      */
-    public function dump($template, array $parameters, $filename, $force = false)
+    public function dump($configuration, $filename, $force = false)
     {
         $file = $this->getPath().'/'.$filename;
 
         // Don't rewrite existing configuration if not forced to.
         if (false === $force && file_exists($file)) {
-            return $file;
+            return;
         }
 
-        $configuration = $this->generate($template, $parameters);
-
-        $directory = $this->getPath();
-
-        if (!$this->filesystem->exists($directory)) {
-            $this->filesystem->mkdir($directory);
+        if (!$this->filesystem->exists($this->getPath())) {
+            $this->filesystem->mkdir($this->getPath());
         }
 
         if (false === file_put_contents($file, $configuration)) {

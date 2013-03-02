@@ -35,15 +35,7 @@ class Fastcgi extends BaseGateway
     /**
      * {@inheritdoc}
      */
-    protected function getCommandLineArguments(ConfigurationGenerator $generator)
-    {
-        return array();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function start(ConfigurationGenerator $generator)
+    public function start()
     {
         // Fastcgi is run by Lighttpd we don't need to start a process.
         if (null !== $this->logger) {

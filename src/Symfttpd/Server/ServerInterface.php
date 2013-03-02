@@ -12,7 +12,6 @@
 namespace Symfttpd\Server;
 
 use Symfttpd\Options;
-use Symfttpd\ConfigurationGenerator;
 use Symfttpd\ProcessAwareInterface;
 use Symfttpd\Project\ProjectInterface;
 
@@ -31,32 +30,6 @@ interface ServerInterface extends ProcessAwareInterface
     public function getName();
 
     /**
-     * Run the server command to start it.
-     *
-     * @param \Symfttpd\ConfigurationGenerator $generator
-     *
-     * @return mixed
-     * @throws \RuntimeException
-     */
-    public function start(ConfigurationGenerator $generator);
-
-    /**
-     * Stop the server.
-     *
-     * @return mixed
-     */
-    public function stop();
-
-    /**
-     * Restart the server command to start it.
-     *
-     * @param \Symfttpd\ConfigurationGenerator $generator
-     *
-     * @return mixed
-     */
-    public function restart(ConfigurationGenerator $generator);
-
-    /**
      * Configure the server.
      *
      * @param \Symfttpd\Options                   $config
@@ -71,9 +44,46 @@ interface ServerInterface extends ProcessAwareInterface
     public function bind($address, $port = null);
 
     /**
+     * @return Options
+     */
+    public function getOptions();
+
+    /**
+     * Run the server command to start it.
+     *
+     * @return mixed
+     * @throws \RuntimeException
+     */
+    public function start();
+
+    /**
+     * Stop the server.
+     *
+     * @return mixed
+     */
+    public function stop();
+
+    /**
+     * Restart the server command to start it.
+     *
+     * @return mixed
+     */
+    public function restart();
+
+    /**
      * Return the gateway instance used by the server e.g. php-fpm, fastcgi.
      *
      * @return \Symfttpd\Gateway\GatewayInterface
      */
     public function getGateway();
+
+    /**
+     * @return string
+     */
+    public function getConfigurationFile();
+
+    /**
+     * @param string $file
+     */
+    public function setConfigurationFile($file);
 }

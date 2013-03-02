@@ -31,6 +31,6 @@ class Nginx extends Server
      */
     protected function getCommandLineArguments()
     {
-        return array($this->options['executable'], '-c', $generator->dump($this, true));
+        return array($this->options['executable'], '-c', $this->getConfigurationFile());
     }
 }

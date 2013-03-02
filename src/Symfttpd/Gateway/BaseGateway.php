@@ -12,10 +12,12 @@
 namespace Symfttpd\Gateway;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfttpd\Options;
 use Symfttpd\ConfigurationGenerator;
 use Symfttpd\Gateway\GatewayInterface;
+use Symfttpd\EventDispatcher\Event\GatewayEvent;
 
 /**
  * BaseGateway
@@ -24,6 +26,11 @@ use Symfttpd\Gateway\GatewayInterface;
  */
 abstract class BaseGateway implements GatewayInterface
 {
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    protected $dispatcher;
+
     /**
      * @var \Symfony\Component\Process\ProcessBuilder
      */
@@ -38,6 +45,19 @@ abstract class BaseGateway implements GatewayInterface
      * @var Options
      */
     public $options;
+
+    /**
+     * @var string
+     */
+    public $configurationFile;
+
+    /**
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+     */
+    public function __construct(EventDispatcherInterface $dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
 
     /**
      * @param \Symfttpd\Options $options
@@ -90,8 +110,10 @@ abstract class BaseGateway implements GatewayInterface
     /**
      * {@inheritdoc}
      */
-    public function start(ConfigurationGenerator $generator)
+    public function start()
     {
+        $this->dispatcher->dispatch('gateway.pre_start', new GatewayEvent($this));
+
         // Create the socket file first.
         touch($this->options['socket']);
 
@@ -108,6 +130,8 @@ abstract class BaseGateway implements GatewayInterface
         if (null !== $this->logger) {
             $this->logger->debug("{$this->getName()} started.");
         }
+
+        $this->dispatcher->dispatch('gateway.post_start', new GatewayEvent($this));
     }
 
     /**
@@ -128,4 +152,28 @@ abstract class BaseGateway implements GatewayInterface
      * @return mixed
      */
     abstract protected function getCommandLineArguments();
+
+    /**
+     * @param string $configurationFile
+     */
+    public function setConfigurationFile($configurationFile)
+    {
+        $this->configurationFile = $configurationFile;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfigurationFile()
+    {
+        return $this->configurationFile;
+    }
+
+    /**
+     * @return \Symfttpd\Options
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
 }

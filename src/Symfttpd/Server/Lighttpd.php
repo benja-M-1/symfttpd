@@ -31,6 +31,6 @@ class Lighttpd extends Server
      */
     protected function getCommandLineArguments()
     {
-        return array($this->options['executable'], '-f', $generator->dump($this, true));
+        return array($this->options['executable'], '-f', $this->getConfigurationFile());
     }
 }

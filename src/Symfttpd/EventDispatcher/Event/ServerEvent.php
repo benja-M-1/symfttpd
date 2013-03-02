@@ -9,30 +9,28 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Symfttpd\Gateway;
+namespace Symfttpd\EventDispatcher\Event;
 
-use Symfttpd\Gateway\BaseGateway;
+use Symfony\Component\EventDispatcher\Event;
+use Symfttpd\Server\ServerInterface;
 
 /**
- * PHP FPM gateway
+ * ServerEvent
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class PhpFpm extends BaseGateway
+class ServerEvent extends Event
 {
     /**
-     * @return string
+     * @var \Symfttpd\Server\ServerInterface
      */
-    public function getName()
-    {
-        return 'php-fpm';
-    }
+    protected $server;
 
     /**
-     * {@inheritdoc}
+     * @param \Symfttpd\Server\ServerInterface $server
      */
-    protected function getCommandLineArguments()
+    public function __construct(ServerInterface $server)
     {
-        return array($this->options['executable'], '-y', $this->getConfigurationFile());
+        $this->server = $server;
     }
 }

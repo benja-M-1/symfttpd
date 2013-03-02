@@ -60,6 +60,29 @@ class Application extends BaseApplication
 
         $c['debug'] = false;
 
+        $c['dispatcher'] = $c->share(function ($c) {
+            return new \Symfony\Component\EventDispatcher\EventDispatcher();
+        });
+
+        $c['symfttpd_file'] = $c->share(function ($c) {
+            $file = new SymfttpdFile();
+            $file->setProcessor(new Processor());
+            $file->setConfiguration(new SymfttpdConfiguration());
+
+            return $file;
+        });
+
+        $c['options'] = $c->share(function ($c) {
+            $options = new Options();
+            $options->merge($c['symfttpd_file']->read());
+
+            if (!$options->has('symfttpd_dir')) {
+                $options->get('symfttpd_dir', getcwd().'/symfttpd');
+            }
+
+            return $options;
+        });
+
         $c['project.guesser'] = $c->share(function ($c) {
             $guesser = new ProjectGuesser();
             $guesser->registerChecker(new Symfony1Checker());
@@ -75,28 +98,9 @@ class Application extends BaseApplication
             return $finder;
         });
 
-        $c['symfttpd_file'] = $c->share(function ($c) {
-            $file = new SymfttpdFile();
-            $file->setProcessor(new Processor());
-            $file->setConfiguration(new SymfttpdConfiguration());
-
-            return $file;
-        });
-
-        $c['config'] = $c->share(function ($c) {
-            $config = new Options();
-            $config->merge($c['symfttpd_file']->read());
-
-            if (!$config->has('symfttpd_dir')) {
-                $config->get('symfttpd_dir', getcwd().'/symfttpd');
-            }
-
-            return $config;
-        });
-
         $c['twig'] = $c->share(function ($c) {
             $dirs = array(__DIR__ . '/../Resources/templates/');
-            $dirs += $c['config']->get('server_templates_dirs', array());
+            $dirs += $c['options']->get('server_templates_dirs', array());
 
             return new \Twig_Environment(
                 new \Twig_Loader_Filesystem($dirs),
@@ -114,18 +118,26 @@ class Application extends BaseApplication
         });
 
         $c['generator'] = $c->share(function ($c) {
-            $config = $c['config'];
-            $generator = new \Symfttpd\ConfigurationGenerator($c['twig'], $c['filesystem'], $c['logger']);
-            $generator->setPath($config->get('server_config_path', $config->get('symfttpd_dir') . '/conf'));
+            $options = $c['options'];
+            $generator = new \Symfttpd\Generator\ConfigurationGenerator($c['twig'], $c['filesystem'], $c['logger']);
+            $generator->setPath($options->get('server_config_path', $options->get('symfttpd_dir') . '/conf'));
 
             return $generator;
         });
 
-        $c['project'] = $c->share(function ($c) {
-            /** @var $config \Symfttpd\Options */
-            $config = $c['config'];
+        $c['server_generator'] = $c->share(function ($c) {
+            return new \Symfttpd\Generator\ServerConfigurationGenerator($c['server'], $c['generator']);
+        });
 
-            if (!$config->has('project_type')) {
+        $c['gateway_generator'] = $c->share(function ($c) {
+            return new \Symfttpd\Generator\GatewayConfigurationGenerator($c['gateway'], $c['generator']);
+        });
+
+        $c['project'] = $c->share(function ($c) {
+            /** @var $options \Symfttpd\Options */
+            $options = $c['options'];
+
+            if (!$options->has('project_type')) {
                 try {
                     list($type, $version) = $c['project.guesser']->guess();
                 } catch (UnguessableException $e) {
@@ -133,8 +145,8 @@ class Application extends BaseApplication
                     $version = null;
                 }
             } else {
-                $type = $config->get('project_type', 'php');
-                $version = 'null';
+                $type = $options->get('project_type', 'php');
+                $version = $options->get('project_version', null);
             }
 
             $class = sprintf('Symfttpd\\Project\\%s', ucfirst($type) . str_replace(array('.', '-', 'O'), '', $version));
@@ -150,20 +162,28 @@ class Application extends BaseApplication
             }
 
             // @todo create a configure method in the project to not inject anything in the constructor.
-            return new $class($config);
+            return new $class($options);
         });
 
-        $c['server'] = $c->share(function ($c) use ($symfttpd) {
-            /** @var $config \Symfttpd\Options */
-            $config = $c['config'];
+        $c['server.lighttpd'] = $c->share(function ($c) {
+            return new \Symfttpd\Server\Lighttpd($c['dispatcher']);
+        });
 
-            $server = $symfttpd->getServer($config->get('server_type'));
+        $c['server.nginx'] = $c->share(function ($c) {
+            return new \Symfttpd\Server\Nginx($c['dispatcher']);
+        });
 
-            if (!$config->has('server_cmd')) {
-                $config->set('server_cmd', $c['finder']->find($server->getName()));
+        $c['server'] = $c->share(function ($c) {
+            /** @var $options \Symfttpd\Options */
+            $options = $c['options'];
+
+            $server = $c['server.'.$options->get('server_type')];
+
+            if (!$options->has('server_cmd')) {
+                $options->set('server_cmd', $c['finder']->find($server->getName()));
             }
 
-            $server->configure($config, $c['project']);
+            $server->configure($options, $c['project']);
             $server->setGateway($c['gateway']);
             $server->setProcessBuilder($c['process_builder']);
             $server->setLogger($c['logger']);
@@ -171,19 +191,27 @@ class Application extends BaseApplication
             return $server;
         });
 
-        $c['gateway'] = $c->share(function ($c) use ($symfttpd) {
-            /** @var $config \Symfttpd\Options */
-            $config = $c['config'];
+        $c['gateway.fastcgi'] = $c->share(function ($c) {
+            return new \Symfttpd\Gateway\Fastcgi($c['dispatcher']);
+        });
+
+        $c['gateway.php-fpm'] = $c->share(function ($c) {
+            return new \Symfttpd\Gateway\PhpFpm($c['dispatcher']);
+        });
+
+        $c['gateway'] = $c->share(function ($c) {
+            /** @var $options \Symfttpd\Options */
+            $options = $c['options'];
 
             /** @var \Symfttpd\Gateway\GatewayInterface $gateway */
-            $gateway = $symfttpd->getGateway($config->get('gateway_type', 'fastcgi'));
+            $gateway = $c['gateway.'.$options->get('gateway_type', 'fastcgi')];
 
             // Guess the gateway command if it is not porvided.
-            if (!$config->has('gateway_cmd')) {
-                $config->set('gateway_cmd', $c['finder']->find($gateway->getType()));
+            if (!$options->has('gateway_cmd')) {
+                $options->set('gateway_cmd', $c['finder']->find($gateway->getType()));
             }
 
-            $gateway->configure($config);
+            $gateway->configure($options);
             $gateway->setProcessBuilder($c['process_builder']);
             $gateway->setLogger($c['logger']);
 
@@ -205,7 +233,7 @@ class Application extends BaseApplication
             }
 
             $logger = new Logger('symfttpd');
-            $logger->pushHandler(new StreamHandler($c['config']->get('symfttpd_dir').'/log/symfttpd.log', $level));
+            $logger->pushHandler(new StreamHandler($c['options']->get('symfttpd_dir').'/log/symfttpd.log', $level));
 
             return $logger;
         });
@@ -216,6 +244,16 @@ class Application extends BaseApplication
 
             return $watcher;
         });
+
+        $this->registerListeners();
+    }
+
+    protected function registerListeners()
+    {
+        $dispatcher = $this->container['dispatcher'];
+
+        $dispatcher->addListener('server.pre_start', array($this->container['server_generator'], 'dump'));
+        $dispatcher->addListener('gateway.pre_start', array($this->container['gateway_generator'], 'dump'));
     }
 
     /**
