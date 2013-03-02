@@ -48,12 +48,27 @@ class GatewayConfigurationGenerator
      */
     public function dump()
     {
-        $filename   = $this->gateway->getName().'.conf';
-        $template   = $this->gateway->getName().'/'.$filename.'.twig';
+        $file = $this->generator->dump($this->generate(), $this->getFilename(), true);
+
+        $this->gateway->setConfigurationFile($file);
+    }
+
+    /**
+     * @return string
+     */
+    public function generate()
+    {
+        $template   = $this->gateway->getName().'/'.$this->getFilename().'.twig';
         $parameters = $this->gateway->getOptions()->all();
 
-        $configuration = $this->generator->generate($template, $parameters);
+        return $this->generator->generate($template, $parameters);
+    }
 
-        $this->gateway->setConfigurationFile($this->generator->dump($configuration, $filename, true));
+    /**
+     * @return string
+     */
+    protected function getFilename()
+    {
+        return $this->gateway->getName().'.conf';
     }
 }

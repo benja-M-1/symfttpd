@@ -72,15 +72,13 @@ EOT
         $container = $this->getApplication()->getContainer();
 
         $container['project']->setRootDir($input->getOption('path'));
-        $server = $container['server'];
-        $server->bind($input->getOption('bind'), $input->getOption('port'));
+        $container['server']->bind($input->getOption('bind'), $input->getOption('port'));
 
         try {
-
             if (null == $input->getOption('output')) {
-                $container['generator']->dump($server, true);
+                $container['server_generator']->dump();
             } else {
-                $baseOutput->write($container['generator']->generate($server));
+                $baseOutput->write($container['server_generator']->generate());
             }
 
         } catch (\RuntimeException $e) {
