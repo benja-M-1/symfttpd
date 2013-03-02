@@ -15,7 +15,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Application as BaseApplication;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,7 +28,6 @@ use Symfttpd\Console\Helper\DialogHelper;
 use Symfttpd\Options;
 use Symfttpd\SymfttpdConfiguration;
 use Symfttpd\ConfigurationGenerator;
-use Symfttpd\Exception\ExecutableNotFoundException;
 use Symfttpd\Guesser\Checker\Symfony2Checker;
 use Symfttpd\Guesser\Checker\Symfony1Checker;
 use Symfttpd\Guesser\Exception\UnguessableException;
@@ -38,17 +36,12 @@ use Symfttpd\Symfttpd;
 use Symfttpd\SymfttpdFile;
 
 /**
- * Application class
+ * Application
  *
  * @author Benjamin Grandfond <benjaming@theodo.fr>
  */
 class Application extends BaseApplication
 {
-    /**
-     * @var Symfttpd
-     */
-    protected $symfttpd;
-
     /**
      * @var \Pimple
      */
@@ -57,9 +50,9 @@ class Application extends BaseApplication
     /**
      * Constructor
      */
-    public function __construct(Symfttpd $symfttpd)
+    public function __construct()
     {
-        $this->symfttpd = $symfttpd;
+        $this->symfttpd = new Symfttpd();
 
         parent::__construct('Symfttpd', Symfttpd::VERSION);
 

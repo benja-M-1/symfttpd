@@ -71,22 +71,24 @@ class ConfigurationGenerator
     }
 
     /**
-     * @param \Symfttpd\Server\ServerInterface|\Symfttpd\Gateway\GatewayInterface $subject
-     * @param bool                                                                $force
+     * @param string $template
+     * @param array  $parameters
+     * @param string $filename
+     * @param bool   $force
      *
-     * @return string            The generated file
+     * @return string
      * @throws \RuntimeException
      */
-    public function dump($subject, $force = false)
+    public function dump($template, array $parameters, $filename, $force = false)
     {
-        $file = $this->getPath().'/'.$subject->getType().'.conf';
+        $file = $this->getPath().'/'.$filename;
 
         // Don't rewrite existing configuration if not forced to.
         if (false === $force && file_exists($file)) {
             return $file;
         }
 
-        $configuration = $this->generate($subject);
+        $configuration = $this->generate($template, $parameters);
 
         $directory = $this->getPath();
 
@@ -98,20 +100,17 @@ class ConfigurationGenerator
             throw new \RuntimeException(sprintf('Cannot generate the file "%s".', $this->getPath()));
         }
 
-        if (null !== $this->logger) {
-            $this->logger->debug("Configuration for {$subject->getType()} generated in {$file}.");
-        }
-
         return $file;
     }
 
     /**
-     * @param \Symfttpd\Server\ServerInterface|\Symfttpd\Gateway\GatewayInterface $subject
+     * @param string $template
+     * @param array  $parameters
      *
      * @return string
      */
-    public function generate($subject)
+    public function generate($template, array $parameters)
     {
-        return $this->twig->render($subject->getType().'/'.$subject->getType().'.conf.twig', array('subject' => $subject));
+        return $this->twig->render($template, $parameters);
     }
 }

@@ -28,5 +28,5 @@ if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader
     exit(1);
 }
 
-$application = new Symfttpd\Console\Application(new Symfttpd\Symfttpd());
+$application = new Symfttpd\Console\Application();
 $application->run();
