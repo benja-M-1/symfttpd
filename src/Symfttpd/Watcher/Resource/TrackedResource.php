@@ -55,7 +55,7 @@ class TrackedResource implements ResourceInterface
      */
     public function hasChanged()
     {
-        if ($this->resource->getCTime() > $this->updatedAt) {
+        if ($this->resource->getMTime() > $this->updatedAt) {
             $this->updatedAt = $this->resource->getMTime();
 
             return true;
