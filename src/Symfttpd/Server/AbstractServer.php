@@ -21,11 +21,11 @@ use Symfttpd\Project\ProjectInterface;
 use Symfttpd\Server\ServerInterface;
 
 /**
- * Server class.
+ * AbstractServer class.
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-abstract class Server implements ServerInterface
+abstract class AbstractServer implements ServerInterface
 {
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface

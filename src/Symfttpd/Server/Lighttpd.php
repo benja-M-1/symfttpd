@@ -16,7 +16,7 @@ namespace Symfttpd\Server;
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class Lighttpd extends Server
+class Lighttpd extends AbstractServer
 {
     /**
      * @return string

@@ -16,7 +16,7 @@ namespace Symfttpd\Server;
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class Nginx extends Server
+class Nginx extends AbstractServer
 {
     /**
      * @return string
