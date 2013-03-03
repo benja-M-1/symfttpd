@@ -91,5 +91,11 @@ class InitCommandTest extends \PHPUnit_Framework_TestCase
             ));
 
         $command->run($input, $output);
+
+        $symfttpdFile = getcwd().'/symfttpd.conf.php';
+
+        $this->assertFileExists($symfttpdFile);
+
+        unlink($symfttpdFile);
     }
 }
