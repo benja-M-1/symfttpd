@@ -76,8 +76,8 @@ class SpawnCommand extends Command
         // Kill other running server in the current project.
         if (true == $input->getOption('kill')) {
             // Kill existing server instance if found.
-            if (file_exists($server->options->get('pidfile'))) {
-                \Symfttpd\Utils\PosixTools::killPid($server->options->get('pidfile'), $output);
+            if (file_exists($server->getOptions()->get('pidfile'))) {
+                \Symfttpd\Utils\PosixTools::killPid($server->getOptions()->get('pidfile'), $output);
             }
         }
 
@@ -89,8 +89,8 @@ class SpawnCommand extends Command
 
         $multitail = null;
         if ($input->getOption('tail')) {
-            $tailAccess = new Tail($server->options->get('accessLog'));
-            $tailError  = new Tail($server->options->get('errorLog'));
+            $tailAccess = new Tail($server->getOptions()->get('accessLog'));
+            $tailError  = new Tail($server->getOptions()->get('errorLog'));
 
             $multitail = new MultiTail(new OutputFormatter(true));
             $multitail->add('access', $tailAccess, new OutputFormatterStyle('blue'));
@@ -107,7 +107,7 @@ class SpawnCommand extends Command
 
         try {
             $paths = array();
-            foreach (array($server->options->get('accessLog'), $server->options->get('errorLog')) as $path) {
+            foreach (array($server->getOptions()->get('accessLog'), $server->getOptions()->get('errorLog')) as $path) {
                 if (null !== $path && $dirname = dirname($path)) {
                     $paths[] = $dirname;
                 }
@@ -128,16 +128,16 @@ class SpawnCommand extends Command
             $watcher = $container['watcher'];
 
             // Watch at the document root content and restart the server if it changed.
-            $watcher->track($server->options->get('documentRoot'), function ($resource) use ($server, $output) {
-                $output->writeln("<comment>Something in {$server->options->get('documentRoot')} changed. Restarting {$server->getName()}.</comment>");
+            $watcher->track($server->getOptions()->get('documentRoot'), function ($resource) use ($server, $output) {
+                $output->writeln("<comment>Something in {$server->getOptions()->get('documentRoot')} changed. Restarting {$server->getName()}.</comment>");
 
                 $server->restart();
             });
 
             // Watch at server log files
             if ($multitail instanceof TailInterface) {
-                $watcher->track($server->options->get('errorLog'), array($multitail, 'consume'));
-                $watcher->track($server->options->get('accessLog'), array($multitail, 'consume'));
+                $watcher->track($server->getOptions()->get('errorLog'), array($multitail, 'consume'));
+                $watcher->track($server->getOptions()->get('accessLog'), array($multitail, 'consume'));
             }
 
             // Start watching
@@ -159,21 +159,21 @@ class SpawnCommand extends Command
      */
     public function getMessage(ServerInterface $server)
     {
-        if (null == ($address = $server->options->get('address'))) {
+        if (null == ($address = $server->getOptions()->get('address'))) {
             $address = 'localhost';
         }
 
         $urls = "";
-        foreach ($server->options->get('executableFiles') as $file) {
+        foreach ($server->getOptions()->get('executableFiles') as $file) {
             if (preg_match('/.+\.php$/', $file)) {
-                $urls .= ' http://' . $address . ':' . $server->options->get('port') . '/<info>' . $file . '</info>'.PHP_EOL;
+                $urls .= ' http://' . $address . ':' . $server->getOptions()->get('port') . '/<info>' . $file . '</info>'.PHP_EOL;
             }
         }
 
-        $address = null === $server->options->get('address') ? 'all interfaces' : $address;
+        $address = null === $server->getOptions()->get('address') ? 'all interfaces' : $address;
 
         return <<<TEXT
-{$server->getName()} started on <info>{$address}</info>, port <info>{$server->options->get('port')}</info>.
+{$server->getName()} started on <info>{$address}</info>, port <info>{$server->getOptions()->get('port')}</info>.
 
 Available applications:
 {$urls}
