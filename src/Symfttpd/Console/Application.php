@@ -109,11 +109,11 @@ class Application extends BaseApplication
             return $generator;
         });
 
-        $c['server_generator'] = $c->share(function ($c) {
+        $c['generator.server'] = $c->share(function ($c) {
             return new \Symfttpd\Generator\ServerConfigurationGenerator($c['server'], $c['generator']);
         });
 
-        $c['gateway_generator'] = $c->share(function ($c) {
+        $c['generator.gateway'] = $c->share(function ($c) {
             return new \Symfttpd\Generator\GatewayConfigurationGenerator($c['gateway'], $c['generator']);
         });
 
@@ -236,8 +236,8 @@ class Application extends BaseApplication
     {
         $dispatcher = $this->container['dispatcher'];
 
-        $dispatcher->addListener('server.pre_start', array($this->container['server_generator'], 'dump'));
-        $dispatcher->addListener('gateway.pre_start', array($this->container['gateway_generator'], 'dump'));
+        $dispatcher->addListener('server.pre_start', array($this->container['generator.server'], 'dump'));
+        $dispatcher->addListener('gateway.pre_start', array($this->container['generator.gateway'], 'dump'));
     }
 
     /**

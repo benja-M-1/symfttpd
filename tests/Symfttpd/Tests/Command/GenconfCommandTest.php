@@ -74,7 +74,7 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
         $path = $this->fixtures . '/web';
         $container = $this->getContainer($path);
 
-        $container['server_generator']->expects($this->once())
+        $container['generator.server']->expects($this->once())
             ->method('dump')
         ;
 
@@ -96,7 +96,7 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
         $path = $this->fixtures . '/web';
         $container = $this->getContainer($path);
 
-        $container['server_generator']->expects($this->once())
+        $container['generator.server']->expects($this->once())
             ->method('generate')
             ->will($this->returnValue('foo'))
         ;
@@ -119,7 +119,7 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
     {
         $container = new \Pimple();
 
-        $container['server_generator'] = $this->getMock('\Symfttpd\Generator\ServerConfigurationGenerator', array(), array(), '', false);
+        $container['generator.server'] = $this->getMock('\Symfttpd\Generator\ServerConfigurationGenerator', array(), array(), '', false);
 
         $container['project'] = $this->getMock('\Symfttpd\Project\ProjectInterface', array(), array(), '', false);
         $container['project']->expects($this->once())
