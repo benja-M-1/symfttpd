@@ -15,16 +15,14 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfttpd\Options;
-use Symfttpd\ConfigurationGenerator;
 use Symfttpd\Gateway\GatewayInterface;
-use Symfttpd\EventDispatcher\Event\GatewayEvent;
 
 /**
- * BaseGateway
+ * AbstractGateway
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-abstract class BaseGateway implements GatewayInterface
+abstract class AbstractGateway implements GatewayInterface
 {
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
@@ -37,11 +35,6 @@ abstract class BaseGateway implements GatewayInterface
     protected $processBuilder;
 
     /**
-     * @var \Psr\Log\LoggerInterface;
-     */
-    protected $logger;
-
-    /**
      * @var Options
      */
     public $options;
@@ -50,6 +43,11 @@ abstract class BaseGateway implements GatewayInterface
      * @var string
      */
     public $configurationFile;
+
+    /**
+     * @var \Psr\Log\LoggerInterface;
+     */
+    protected $logger;
 
     /**
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
@@ -61,8 +59,6 @@ abstract class BaseGateway implements GatewayInterface
 
     /**
      * @param \Symfttpd\Options $options
-     *
-     * @return \Symfttpd\Options|void
      */
     public function configure(Options $options)
     {
@@ -84,6 +80,13 @@ abstract class BaseGateway implements GatewayInterface
     }
 
     /**
+     * Return the parts of the command line to run the process.
+     *
+     * @return mixed
+     */
+    abstract protected function getCommandLineArguments();
+
+    /**
      * {@inheritdoc}
      */
     public function setProcessBuilder(ProcessBuilder $pb)
@@ -100,61 +103,7 @@ abstract class BaseGateway implements GatewayInterface
     }
 
     /**
-     * @param \Psr\Log\LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
      * {@inheritdoc}
-     */
-    public function start()
-    {
-        $this->dispatcher->dispatch('gateway.pre_start', new GatewayEvent($this));
-
-        // Create the socket file first.
-        touch($this->options['socket']);
-
-        $process = $this->getProcessBuilder()
-            ->setArguments($this->getCommandLineArguments())
-            ->getProcess();
-
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
-
-        if (null !== $this->logger) {
-            $this->logger->debug("{$this->getName()} started.");
-        }
-
-        $this->dispatcher->dispatch('gateway.post_start', new GatewayEvent($this));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function stop()
-    {
-        \Symfttpd\Utils\PosixTools::killPid($this->options['pidfile']);
-
-        if (null !== $this->logger) {
-            $this->logger->debug("{$this->getName()} stopped.");
-        }
-    }
-
-    /**
-     * Return the parts of the command line to run the process.
-     *
-     * @return mixed
-     */
-    abstract protected function getCommandLineArguments();
-
-    /**
-     * @param string $configurationFile
      */
     public function setConfigurationFile($configurationFile)
     {
@@ -162,7 +111,7 @@ abstract class BaseGateway implements GatewayInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getConfigurationFile()
     {
@@ -175,5 +124,13 @@ abstract class BaseGateway implements GatewayInterface
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * @param \Psr\Log\LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 }

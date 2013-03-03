@@ -11,7 +11,7 @@
 
 namespace Symfttpd\Gateway;
 
-use Symfttpd\Gateway\BaseGateway;
+use Symfttpd\Gateway\AbstractGateway;
 
 /**
  * FastCGI Gateway
@@ -22,7 +22,7 @@ use Symfttpd\Gateway\BaseGateway;
  * @see issue https://github.com/benja-M-1/symfttpd/issues/38
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class Fastcgi extends BaseGateway
+class Fastcgi extends AbstractGateway
 {
     /**
      * @return string
