@@ -68,7 +68,7 @@ abstract class AbstractServer implements ServerInterface
     /**
      * Configure the server.
      *
-     * @param \Symfttpd\Options                   $options
+     * @param \Symfttpd\Options                  $options
      * @param \Symfttpd\Project\ProjectInterface $project
      *
      * @throws \RuntimeException

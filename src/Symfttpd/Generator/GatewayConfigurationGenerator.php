@@ -35,7 +35,7 @@ class GatewayConfigurationGenerator
 
     /**
      * @param \Symfttpd\Gateway\GatewayInterface $gateway
-     * @param ConfigurationGeneratorInterface  $generator
+     * @param ConfigurationGeneratorInterface    $generator
      */
     public function __construct(GatewayInterface $gateway, ConfigurationGeneratorInterface $generator)
     {

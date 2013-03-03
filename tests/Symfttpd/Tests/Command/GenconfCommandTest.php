@@ -13,12 +13,9 @@ namespace Symfttpd\Tests\Command;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfttpd\Console\Command\GenconfCommand;
 
 /**
- * GenconfCommand test class
- *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
 class GenconfCommandTest extends \PHPUnit_Framework_TestCase

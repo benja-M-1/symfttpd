@@ -325,7 +325,6 @@ class Application extends BaseApplication
         return $definition;
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -357,7 +356,6 @@ class Application extends BaseApplication
 
         return $helperSet;
     }
-
 
     /**
      * @return string

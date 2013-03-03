@@ -13,7 +13,6 @@ namespace Symfttpd\Tests\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfttpd\Options;
-use Symfttpd\Server\AbstractServer;
 use Symfttpd\Console\Command\SpawnCommand;
 
 /**

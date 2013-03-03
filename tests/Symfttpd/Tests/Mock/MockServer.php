@@ -13,8 +13,7 @@ namespace Symfttpd\Tests\Mock;
 
 use Symfttpd\Tail\TailInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfttpd\Server\BaseServer;
-use Symfttpd\ConfigurationGenerator;
+use Symfttpd\Server\AbstractServer as BaseServer;
 
 /**
  * MockServer class
@@ -29,16 +28,6 @@ class MockServer extends BaseServer
     public function getName()
     {
         return 'mock';
-    }
-
-    /**
-     * Return the server command value
-     *
-     * @return string
-     */
-    public function getCommand()
-    {
-        return '/foo/bar/mock';
     }
 
     /**
@@ -60,7 +49,7 @@ class MockServer extends BaseServer
      *
      * @return mixed
      */
-    public function start(ConfigurationGenerator $generator, OutputInterface $output, TailInterface $tail = null)
+    public function start()
     {
         // TODO: Implement start() method.
     }
@@ -74,7 +63,7 @@ class MockServer extends BaseServer
      *
      * @return mixed
      */
-    public function restart(ConfigurationGenerator $generator, OutputInterface $output, TailInterface $tail = null)
+    public function restart()
     {
         // TODO: Implement restart() method.
     }
@@ -86,8 +75,19 @@ class MockServer extends BaseServer
      *
      * @return mixed
      */
-    public function stop(OutputInterface $output)
+    public function stop()
     {
         // TODO: Implement stop() method.
+    }
+
+    /**
+     * Return the command line executed by the process.
+     *
+     * @return array
+     * @throws \RuntimeException
+     */
+    protected function getCommandLineArguments()
+    {
+        return array();
     }
 }

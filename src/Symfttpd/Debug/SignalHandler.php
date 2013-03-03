@@ -12,7 +12,6 @@
 namespace Symfttpd\Debug;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfttpd\Gateway\GatewayProcessableInterface;
 use Psr\Log\LoggerInterface;
 use Symfttpd\Server\ServerInterface;
 

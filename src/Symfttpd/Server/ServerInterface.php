@@ -32,7 +32,7 @@ interface ServerInterface extends ProcessAwareInterface
     /**
      * Configure the server.
      *
-     * @param \Symfttpd\Options                   $config
+     * @param \Symfttpd\Options                  $config
      * @param \Symfttpd\Project\ProjectInterface $project
      */
     public function configure(Options $config, ProjectInterface $project);

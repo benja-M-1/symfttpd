@@ -14,26 +14,22 @@ namespace Symfttpd\Tests\Watcher;
 use Symfttpd\Watcher\Watcher;
 
 /**
- * WatcherTest description
- *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
 class WatcherTest extends \PHPUnit_Framework_TestCase
 {
-    public function testTrackResource()
+    public function testShouldTrackAResource()
     {
         $resource = __DIR__;
 
         $watcher = new Watcher();
-
         $this->assertFalse($watcher->isTracked($resource));
 
         $watcher->track($resource, function () {});
-
         $this->assertTrue($watcher->isTracked($resource));
     }
 
-    public function testTriggerTheCallbackWhenTheResourceChange()
+    public function testShouldExecuteTheCallbackWhenTheResourceChange()
     {
         $fileResource = $this->getMock('\Symfttpd\Watcher\Resource\ResourceInterface');
         $fileResource->expects($this->any())
@@ -43,7 +39,7 @@ class WatcherTest extends \PHPUnit_Framework_TestCase
             ->method('hasChanged')
             ->will($this->returnValue(true));
 
-        $test = $this;
+        $test   = $this;
         $called = false;
 
         $watcher = new Watcher();

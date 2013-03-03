@@ -81,7 +81,7 @@ class Watcher
     /**
      * Start watching at resources
      *
-     * @param int $interval Interval of time in msecond of watching
+     * @param int $interval  Interval of time in msecond of watching
      * @param int $timeLimit Duration on the watching time
      */
     public function start($interval = 1000, $timeLimit = null)
@@ -97,7 +97,7 @@ class Watcher
             $this->logger->debug("Starting watching at resources.");
         }
 
-        while($duration <= $timeLimit || $infinity) {
+        while ($duration <= $timeLimit || $infinity) {
             usleep($duration);
             $duration += $interval;
 

@@ -15,8 +15,6 @@ use Symfttpd\SymfttpdFile;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * SymfttpdFileTest description
- *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
 class SymfttpdFileTest extends \PHPUnit_Framework_TestCase
@@ -39,40 +37,38 @@ class SymfttpdFileTest extends \PHPUnit_Framework_TestCase
         $this->file->setConfiguration($configuration);
 
         $this->filesystem = new Filesystem();
-        $this->filesystem->touch(sys_get_temp_dir().DIRECTORY_SEPARATOR.'symfttpd.conf.php');
+        $this->filesystem->touch(sys_get_temp_dir().'/symfttpd.conf.php');
     }
 
     public function tearDown()
     {
-        $this->filesystem->remove(sys_get_temp_dir().DIRECTORY_SEPARATOR.'symfttpd.conf.php');
+        $this->filesystem->remove(sys_get_temp_dir().'/symfttpd.conf.php');
     }
 
-    public function testAddPath()
+    public function testShouldAddPath()
     {
-        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'symfttpd.conf.php';
+        $dir = sys_get_temp_dir().'/symfttpd.conf.php';
 
         $this->file->addPath($dir);
-
         $this->assertContains($dir, $this->file->getFilePaths());
     }
 
     /**
      * @expectedException \Symfttpd\Exception\FileNotFoundException
      */
-    public function testSetPathException()
+    public function testAddingNotExistingPathShouldThrowException()
     {
         $dir = '/foo/bar';
         $this->file->addPath($dir);
     }
 
-    public function testRead()
+    public function testShouldReadTheFile()
     {
         $configuration = $this->file->read();
-
         $this->assertInternalType('array', $configuration);
     }
 
-    public function testWrite()
+    public function testShouldWriteTheFile()
     {
         $file = new SymfttpdFile();
         $file->write(array('foo' => 'bar'));
