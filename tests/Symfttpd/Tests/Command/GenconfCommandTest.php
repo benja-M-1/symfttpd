@@ -74,9 +74,9 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
         $path = $this->fixtures . '/web';
         $container = $this->getContainer($path);
 
-        $container['generator']->expects($this->once())
+        $container['server_generator']->expects($this->once())
             ->method('dump')
-            ->with($this->isInstanceOf('\Symfttpd\Server\ServerInterface'));
+        ;
 
         $application = new \Symfttpd\Console\Application();
         $application->setContainer($container);
@@ -96,10 +96,10 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
         $path = $this->fixtures . '/web';
         $container = $this->getContainer($path);
 
-        $container['generator']->expects($this->once())
+        $container['server_generator']->expects($this->once())
             ->method('generate')
-            ->with($this->isInstanceOf('\Symfttpd\Server\ServerInterface'))
-            ->will($this->returnValue('foo'));
+            ->will($this->returnValue('foo'))
+        ;
 
         $application = new \Symfttpd\Console\Application();
         $application->setContainer($container);
@@ -119,7 +119,7 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
     {
         $container = new \Pimple();
 
-        $container['generator'] = $this->getMock('\Symfttpd\ConfigurationGenerator', array(), array(), '', false);
+        $container['server_generator'] = $this->getMock('\Symfttpd\Generator\ServerConfigurationGenerator', array(), array(), '', false);
 
         $container['project'] = $this->getMock('\Symfttpd\Project\ProjectInterface', array(), array(), '', false);
         $container['project']->expects($this->once())
