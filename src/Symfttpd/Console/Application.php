@@ -241,6 +241,38 @@ class Application extends BaseApplication
     }
 
     /**
+     * @return array
+     */
+    public function getServerNames()
+    {
+        $servers = array_filter($this->container->keys(), function ($key) {
+            return false !== strpos($key, 'server.');
+        });
+
+        $serverNames = array_map(function ($server) {
+            return str_replace('server.', '', $server);
+        }, $servers);
+
+        return array_values($serverNames);
+    }
+
+    /**
+     * @return array
+     */
+    public function getGatewayNames()
+    {
+        $gateways = array_filter($this->container->keys(), function ($key) {
+                return false !== strpos($key, 'gateway.');
+            });
+
+        $gatewayNames = array_map(function ($gateway) {
+                return str_replace('gateway.', '', $gateway);
+            }, $gateways);
+
+        return array_values($gatewayNames);
+    }
+
+    /**
      * Return the service container
      *
      * @return \Pimple

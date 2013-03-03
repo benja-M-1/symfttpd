@@ -49,9 +49,11 @@ class InitCommandTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('/usr/bin/foo'));
 
         $container = new \Pimple(array(
-            'finder'             => $finder,
-            'supported_servers'  => array('lighttpd', 'nginx'),
-            'supported_gateways' => array('fastcgi', 'php-fpm'),
+            'finder'          => $finder,
+            'server.lighttpd' => 'lighttpd',
+            'server.nginx'    => 'nginx',
+            'gateway.fastcgi' => 'fastcgi',
+            'gateway.php-fpm' => 'php-fpm',
         ));
 
         $application = new \Symfttpd\Console\Application();
