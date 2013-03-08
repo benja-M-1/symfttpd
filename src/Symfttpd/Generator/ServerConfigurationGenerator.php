@@ -24,52 +24,49 @@ use Symfttpd\Server\ServerInterface;
 class ServerConfigurationGenerator
 {
     /**
-     * @var \Symfttpd\Server\ServerInterface
-     */
-    protected $server;
-
-    /**
      * @var ConfigurationGenerator
      */
     protected $generator;
 
     /**
-     * @param \Symfttpd\Server\ServerInterface $server
-     * @param ConfigurationGeneratorInterface  $generator
+     * @param ConfigurationGeneratorInterface $generator
      */
-    public function __construct(ServerInterface $server, ConfigurationGeneratorInterface $generator)
+    public function __construct(ConfigurationGeneratorInterface $generator)
     {
-        $this->server    = $server;
         $this->generator = $generator;
     }
 
     /**
-     * @return string
+     * @param \Symfttpd\Server\ServerInterface $server
      */
-    public function dump()
+    public function dump(ServerInterface $server)
     {
-        $file = $this->generator->dump($this->generate(), $this->getFilename(), true);
+        $file = $this->generator->dump($this->generate($server), $this->getFilename($server), true);
 
-        $this->server->setConfigurationFile($file);
+        $server->setConfigurationFile($file);
     }
 
     /**
+     * @param \Symfttpd\Server\ServerInterface $server
+     *
      * @return string
      */
-    public function generate()
+    public function generate(ServerInterface $server)
     {
-        $template   = $this->server->getName().'/'.$this->getFilename().'.twig';
-        $parameters = $this->server->getOptions()->all();
-        $parameters += array('gateway' => $this->server->getGateway());
+        $template   = $server->getName().'/'.$this->getFilename($server).'.twig';
+        $parameters = $server->getOptions()->all();
+        $parameters += array('gateway' => $server->getGateway());
 
         return $this->generator->generate($template, $parameters);
     }
 
     /**
+     * @param \Symfttpd\Server\ServerInterface $server
+     *
      * @return string
      */
-    protected function getFilename()
+    protected function getFilename(ServerInterface $server)
     {
-        return $this->server->getName() . '.conf';
+        return $server->getName() . '.conf';
     }
 }

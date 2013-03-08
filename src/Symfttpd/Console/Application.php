@@ -110,11 +110,11 @@ class Application extends BaseApplication
         });
 
         $c['generator.server'] = $c->share(function ($c) {
-            return new \Symfttpd\Generator\ServerConfigurationGenerator($c['server'], $c['generator']);
+            return new \Symfttpd\Generator\ServerConfigurationGenerator($c['generator']);
         });
 
         $c['generator.gateway'] = $c->share(function ($c) {
-            return new \Symfttpd\Generator\GatewayConfigurationGenerator($c['gateway'], $c['generator']);
+            return new \Symfttpd\Generator\GatewayConfigurationGenerator($c['generator']);
         });
 
         $c['project'] = $c->share(function ($c) {

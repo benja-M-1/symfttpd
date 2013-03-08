@@ -24,51 +24,48 @@ use Symfttpd\Gateway\GatewayInterface;
 class GatewayConfigurationGenerator
 {
     /**
-     * @var \Symfttpd\Gateway\GatewayInterface
-     */
-    protected $gateway;
-
-    /**
      * @var ConfigurationGenerator
      */
     protected $generator;
 
     /**
-     * @param \Symfttpd\Gateway\GatewayInterface $gateway
-     * @param ConfigurationGeneratorInterface    $generator
+     * @param ConfigurationGeneratorInterface $generator
      */
-    public function __construct(GatewayInterface $gateway, ConfigurationGeneratorInterface $generator)
+    public function __construct(ConfigurationGeneratorInterface $generator)
     {
-        $this->gateway   = $gateway;
         $this->generator = $generator;
     }
 
     /**
-     * @return string
+     * @param \Symfttpd\Gateway\GatewayInterface $gateway
      */
-    public function dump()
+    public function dump(GatewayInterface $gateway)
     {
-        $file = $this->generator->dump($this->generate(), $this->getFilename(), true);
+        $file = $this->generator->dump($this->generate($gateway), $this->getFilename($gateway), true);
 
-        $this->gateway->setConfigurationFile($file);
+        $gateway->setConfigurationFile($file);
     }
 
     /**
+     * @param \Symfttpd\Gateway\GatewayInterface $gateway
+     *
      * @return string
      */
-    public function generate()
+    public function generate(GatewayInterface $gateway)
     {
-        $template   = $this->gateway->getName().'/'.$this->getFilename().'.twig';
-        $parameters = $this->gateway->getOptions()->all();
+        $template   = $gateway->getName().'/'.$this->getFilename($gateway).'.twig';
+        $parameters = $gateway->getOptions()->all();
 
         return $this->generator->generate($template, $parameters);
     }
 
     /**
+     * @param \Symfttpd\Gateway\GatewayInterface $gateway
+     *
      * @return string
      */
-    protected function getFilename()
+    protected function getFilename(GatewayInterface $gateway)
     {
-        return $this->gateway->getName().'.conf';
+        return $gateway->getName().'.conf';
     }
 }
