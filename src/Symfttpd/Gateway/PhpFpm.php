@@ -44,9 +44,6 @@ class PhpFpm extends AbstractGateway
     {
         $this->dispatcher->dispatch('gateway.pre_start', new GatewayEvent($this));
 
-        // Create the socket file first.
-        touch($this->options['socket']);
-
         $process = $this->getProcessBuilder()
             ->setArguments($this->getCommandLineArguments())
             ->getProcess();

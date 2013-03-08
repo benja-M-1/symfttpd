@@ -33,4 +33,12 @@ class GatewayEvent extends Event
     {
         $this->gateway = $gateway;
     }
+
+    /**
+     * @return \Symfttpd\Gateway\GatewayInterface
+     */
+    public function getGateway()
+    {
+        return $this->gateway;
+    }
 }

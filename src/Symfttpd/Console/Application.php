@@ -44,10 +44,6 @@ class Application extends BaseApplication
 
         $c['debug'] = false;
 
-        $c['dispatcher'] = $c->share(function ($c) {
-            return new \Symfony\Component\EventDispatcher\EventDispatcher();
-        });
-
         $c['symfttpd_file'] = $c->share(function ($c) {
             $file = new \Symfttpd\SymfttpdFile();
             $file->setProcessor(new \Symfony\Component\Config\Definition\Processor());
@@ -109,14 +105,6 @@ class Application extends BaseApplication
             return $generator;
         });
 
-        $c['generator.server'] = $c->share(function ($c) {
-            return new \Symfttpd\Generator\ServerConfigurationGenerator($c['generator']);
-        });
-
-        $c['generator.gateway'] = $c->share(function ($c) {
-            return new \Symfttpd\Generator\GatewayConfigurationGenerator($c['generator']);
-        });
-
         $c['project'] = $c->share(function ($c) {
             /** @var $options \Symfttpd\Options */
             $options = $c['options'];
@@ -149,14 +137,6 @@ class Application extends BaseApplication
             return new $class($options);
         });
 
-        $c['server.lighttpd'] = $c->share(function ($c) {
-            return new \Symfttpd\Server\Lighttpd($c['dispatcher']);
-        });
-
-        $c['server.nginx'] = $c->share(function ($c) {
-            return new \Symfttpd\Server\Nginx($c['dispatcher']);
-        });
-
         $c['server'] = $c->share(function ($c) {
             /** @var $options \Symfttpd\Options */
             $options = $c['options'];
@@ -173,14 +153,6 @@ class Application extends BaseApplication
             $server->setLogger($c['logger']);
 
             return $server;
-        });
-
-        $c['gateway.fastcgi'] = $c->share(function ($c) {
-            return new \Symfttpd\Gateway\Fastcgi($c['dispatcher']);
-        });
-
-        $c['gateway.php-fpm'] = $c->share(function ($c) {
-            return new \Symfttpd\Gateway\PhpFpm($c['dispatcher']);
         });
 
         $c['gateway'] = $c->share(function ($c) {
@@ -229,15 +201,74 @@ class Application extends BaseApplication
             return $watcher;
         });
 
+        $c['dispatcher'] = $c->share(function ($c) {
+            $dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+            $dispatcher->addListener('server.pre_start', array($this->container['listener.server'], 'onStart'));
+            $dispatcher->addListener('gateway.pre_start', array($this->container['listener.gateway'], 'onStart'));
+
+            return $dispatcher;
+        });
+
+        $this->registerGenerators();
+        $this->registerServers();
+        $this->registerGateways();
         $this->registerListeners();
     }
 
+    /**
+     * Register generators in the container.
+     */
+    protected function registerGenerators()
+    {
+        $this->container['generator.server'] = $this->container->share(function ($c) {
+                return new \Symfttpd\Generator\ServerConfigurationGenerator($c['generator']);
+            });
+
+        $this->container['generator.gateway'] = $this->container->share(function ($c) {
+                return new \Symfttpd\Generator\GatewayConfigurationGenerator($c['generator']);
+            });
+    }
+
+    /**
+     * Register servers in the container.
+     */
+    protected function registerServers()
+    {
+        $this->container['server.lighttpd'] = $this->container->share(function ($c) {
+            return new \Symfttpd\Server\Lighttpd($c['dispatcher']);
+        });
+
+        $this->container['server.nginx'] = $this->container->share(function ($c) {
+            return new \Symfttpd\Server\Nginx($c['dispatcher']);
+        });
+    }
+
+    /**
+     * Register gateways in the container.
+     */
+    protected function registerGateways()
+    {
+        $this->container['gateway.fastcgi'] = $this->container->share(function ($c) {
+            return new \Symfttpd\Gateway\Fastcgi($c['dispatcher']);
+        });
+
+        $this->container['gateway.php-fpm'] = $this->container->share(function ($c) {
+            return new \Symfttpd\Gateway\PhpFpm($c['dispatcher']);
+        });
+    }
+
+    /**
+     * Register listeners in the container.
+     */
     protected function registerListeners()
     {
-        $dispatcher = $this->container['dispatcher'];
+        $this->container['listener.server'] = $this->container->share(function ($c) {
+            return new \Symfttpd\EventDispatcher\Listener\ServerListener($c['filesystem'], $c['generator.server']);
+        });
 
-        $dispatcher->addListener('server.pre_start', array($this->container['generator.server'], 'dump'));
-        $dispatcher->addListener('gateway.pre_start', array($this->container['generator.gateway'], 'dump'));
+        $this->container['listener.gateway'] = $this->container->share(function ($c) {
+            return new \Symfttpd\EventDispatcher\Listener\GatewayListener($c['filesystem'], $c['generator.gateway']);
+        });
     }
 
     /**

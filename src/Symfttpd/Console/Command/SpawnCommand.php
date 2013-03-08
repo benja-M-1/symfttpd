@@ -106,16 +106,6 @@ class SpawnCommand extends Command
         }
 
         try {
-            $paths = array();
-            foreach (array($server->getOptions()->get('accessLog'), $server->getOptions()->get('errorLog')) as $path) {
-                if (null !== $path && $dirname = dirname($path)) {
-                    $paths[] = $dirname;
-                }
-            }
-
-            $filesystem = $container['filesystem'];
-            $filesystem->mkdir($paths);
-
             // Start the gateway if needed.
             if (null !== $gateway = $server->getGateway()) {
                 $gateway->start();

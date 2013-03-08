@@ -77,9 +77,9 @@ EOT
 
         try {
             if (null == $input->getOption('output')) {
-                $container['generator.server']->dump();
+                $container['generator.server']->dump($container['server']);
             } else {
-                $baseOutput->write($container['generator.server']->generate());
+                $baseOutput->write($container['generator.server']->generate($container['server']));
             }
 
         } catch (\RuntimeException $e) {

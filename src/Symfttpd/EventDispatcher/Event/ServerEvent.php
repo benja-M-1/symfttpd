@@ -33,4 +33,12 @@ class ServerEvent extends Event
     {
         $this->server = $server;
     }
+
+    /**
+     * @return \Symfttpd\Server\ServerInterface
+     */
+    public function getServer()
+    {
+        return $this->server;
+    }
 }
