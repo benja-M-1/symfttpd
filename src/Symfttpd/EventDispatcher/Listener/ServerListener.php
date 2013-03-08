@@ -67,7 +67,22 @@ class ServerListener
     {
         $server = $event->getServer();
 
+        // Start the gateway if needed.
+        if (null !== $gateway = $server->getGateway()) {
+            $gateway->start();
+        }
+
         $this->generator->dump($server);
         $this->createLogDirectory($server);
+    }
+
+    /**
+     * @param \Symfttpd\EventDispatcher\Event\ServerEvent $event
+     */
+    public function onStop(ServerEvent $event)
+    {
+        if (null !== $gateway = $event->getServer()->getGateway()) {
+            $gateway->stop();
+        }
     }
 }

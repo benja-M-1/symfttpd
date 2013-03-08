@@ -106,11 +106,6 @@ class SpawnCommand extends Command
         }
 
         try {
-            // Start the gateway if needed.
-            if (null !== $gateway = $server->getGateway()) {
-                $gateway->start();
-            }
-
             // Start the server
             $server->start();
 

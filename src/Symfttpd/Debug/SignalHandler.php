@@ -95,10 +95,6 @@ class SignalHandler
      */
     public function shutdown()
     {
-        if (null !== $gateway = $this->server->getGateway()) {
-            $gateway->stop();
-        }
-
         $this->server->stop();
 
         if (null != $this->output) {

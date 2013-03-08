@@ -109,7 +109,7 @@ abstract class AbstractServer implements ServerInterface
      */
     public function start()
     {
-        $this->dispatcher->dispatch('server.pre_start', new ServerEvent($this));
+        $this->dispatcher->dispatch('server.start', new ServerEvent($this));
 
         $process = $this->getProcessBuilder()
             ->setArguments($this->getCommandLineArguments())
@@ -124,8 +124,6 @@ abstract class AbstractServer implements ServerInterface
         if (null !== $this->logger) {
             $this->logger->debug("{$this->getName()} started.");
         }
-
-        $this->dispatcher->dispatch('server.post_start', new ServerEvent($this));
     }
 
     /**
@@ -139,6 +137,8 @@ abstract class AbstractServer implements ServerInterface
         if (null !== $this->logger) {
             $this->logger->debug("{$this->getName()} stopped.");
         }
+
+        $this->dispatcher->dispatch('server.stop', new ServerEvent($this));
     }
 
     /**
