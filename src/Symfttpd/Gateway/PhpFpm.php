@@ -42,7 +42,7 @@ class PhpFpm extends AbstractGateway
      */
     public function start()
     {
-        $this->dispatcher->dispatch('gateway.pre_start', new GatewayEvent($this));
+        $this->dispatcher->dispatch('gateway.start', new GatewayEvent($this));
 
         $process = $this->getProcessBuilder()
             ->setArguments($this->getCommandLineArguments())
@@ -57,8 +57,6 @@ class PhpFpm extends AbstractGateway
         if (null !== $this->logger) {
             $this->logger->debug("{$this->getName()} started.");
         }
-
-        $this->dispatcher->dispatch('gateway.post_start', new GatewayEvent($this));
     }
 
     /**

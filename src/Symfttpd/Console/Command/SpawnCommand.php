@@ -113,7 +113,7 @@ class SpawnCommand extends Command
             $watcher = $container['watcher'];
 
             // Watch at the document root content and restart the server if it changed.
-            $watcher->track($server->getOptions()->get('documentRoot'), function ($resource) use ($server, $output) {
+            $watcher->track($server->getOptions()->get('documentRoot'), function () use ($server, $output) {
                 $output->writeln("<comment>Something in {$server->getOptions()->get('documentRoot')} changed. Restarting {$server->getName()}.</comment>");
 
                 $server->restart();
