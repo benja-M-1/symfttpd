@@ -46,15 +46,39 @@ class Application extends BaseApplication
 
         $c['symfttpd_file'] = $c->share(function ($c) {
             $file = new \Symfttpd\SymfttpdFile();
-            $file->setProcessor(new \Symfony\Component\Config\Definition\Processor());
-            $file->setConfiguration(new \Symfttpd\SymfttpdConfiguration());
+            $file->setProcessor($c['processor']);
+            $file->setConfiguration($c['configuration']);
 
             return $file;
         });
 
+        $c['processor'] = $c->share(function ($c) {
+            return new \Symfony\Component\Config\Definition\Processor();
+        });
+
+        $c['configuration'] = $c->share(function ($c) {
+            return new \Symfttpd\SymfttpdConfiguration();
+        });
+
+        $c['locator'] = $c->share(function ($c) {
+            return new \Symfony\Component\Config\FileLocator(array(
+                getcwd(),
+                getcwd().'/config/',
+                getenv('HOME'),
+                getenv('HOME').'/symfttpd/',
+                getenv('HOME').'/.symfttpd/',
+            ));
+        });
+
+        $c['loader_php'] = $c->share(function ($c) {
+            return new \Symfttpd\Loader\PhpFileLoader($c['locator']);
+        });
+
         $c['options'] = $c->share(function ($c) {
+            $config = $c['loader_php']->load('symfttpd.conf.php');
+
             $options = new \Symfttpd\Options();
-            $options->merge($c['symfttpd_file']->read());
+            $options->merge($c['processor']->processConfiguration($c['configuration'], array('symfttpd' => $config)));
 
             if (!$options->has('symfttpd_dir')) {
                 $options->get('symfttpd_dir', getcwd().'/symfttpd');
