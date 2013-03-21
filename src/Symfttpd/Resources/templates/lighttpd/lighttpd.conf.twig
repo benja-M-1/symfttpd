@@ -13,9 +13,9 @@ server.modules = (
 {% block server %}
 server.document-root  = "{{ server.documentRoot }}"
 server.port           = {{ server.port }}
-{%- if server.address is not null -%}
+{% if server.address is not null %}
 server.bind           = "{{ server.address }}"
-{%- endif -%}
+{% endif %}
 server.follow-symlink = "enable"
 static-file.exclude-extensions = (".php")
 
@@ -37,9 +37,9 @@ fastcgi.server = ( ".php" =>
   ( "localhost" =>
     (
       "socket" => "{{ server.gateway.socket|raw }}",
-      {%- if server.gateway.executable is defined -%}
+      {% if server.gateway.executable is defined %}
       "bin-path" => "{{ server.gateway.executable }}",
-      {%- endif -%}
+      {% endif %}
       "max-procs" => 1,
       "max-load-per-proc" => 1,
       "idle-timeout" => 120,
