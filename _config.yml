@@ -4,4 +4,4 @@ include:          [downloads]
 url:              "http://benja-M-1.github.com/symfttpd"
 github:           "https://github.com/benja-M-1/symfttpd"
 symfttpd_path:    "downloads/symfttpd.phar"
-symfttpd_version: 2.1.2
+symfttpd_version: 2.1.3
