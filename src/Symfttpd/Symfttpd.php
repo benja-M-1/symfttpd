@@ -16,7 +16,7 @@ namespace Symfttpd;
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class Symfttpd extends \Pimple
+class Symfttpd
 {
     const VERSION = '@package_version@';
 }

@@ -134,7 +134,7 @@ class Application extends BaseApplication
                 }
             } else {
                 $type = $config->get('project_type', 'php');
-                $version = 'null';
+                $version = substr($config->get('project_version', null), 0, 1);
             }
 
             $class = sprintf('Symfttpd\\Project\\%s', ucfirst($type) . str_replace(array('.', '-', 'O'), '', $version));
