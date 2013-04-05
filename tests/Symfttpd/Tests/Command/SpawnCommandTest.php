@@ -12,8 +12,7 @@
 namespace Symfttpd\Tests\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfttpd\Config;
-use Symfttpd\Server\Server;
+use Symfttpd\Options;
 use Symfttpd\Console\Command\SpawnCommand;
 
 /**
@@ -39,33 +38,22 @@ class SpawnCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecute()
     {
-        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $process->expects($this->once())
-            ->method('run')
-            ->will($this->returnValue(1));
-        $process->expects($this->once())
-            ->method('isSuccessful')
-            ->will($this->returnValue(true));
+        $options = new Options(array(
+            'address' => '127.0.0.1',
+            'port' => '4043',
+            'executableFiles' => array('index.php')
+        ));
 
-        $pb = $this->getMock('\Symfony\Component\Process\ProcessBuilder');
-        $pb->expects($this->once())
-            ->method('setArguments')
-            ->will($this->returnSelf());
-        $pb->expects($this->once())
-            ->method('getProcess')
-            ->will($this->returnValue($process));
-
-        $server = new Server();
-        $server->configure(new Config(array('server_type' => 'lighttpd', 'project_readable_phpfiles' => array('index.php'))), $this->getMock('\Symfttpd\Project\ProjectInterface'));
-        $server->setProcessBuilder($pb);
+        $server = $this->getMock('Symfttpd\Server\ServerInterface');
+        $server->expects($this->any())
+            ->method('getOptions')
+            ->will($this->returnValue($options));
 
         $pimple = new \Pimple(array(
-            'server'     => $server,
-            'generator'  => $this->getMock('\Symfttpd\ConfigurationGenerator', array(), array(), '', false),
-            'filesystem' => $this->getMock('\Symfony\Component\Filesystem\Filesystem'),
-            'watcher'    => $this->getMock('\Symfttpd\Watcher\Watcher')
+            'server'           => $server,
+            'generator.server' => $this->getMock('\Symfttpd\Generator\ServerConfigurationGenerator', array(), array(), '', false),
+            'filesystem'       => $this->getMock('\Symfony\Component\Filesystem\Filesystem'),
+            'watcher'          => $this->getMock('\Symfttpd\Watcher\Watcher')
         ));
         $application = new \Symfttpd\Console\Application();
         $application->setContainer($pimple);
@@ -88,27 +76,12 @@ class SpawnCommandTest extends \PHPUnit_Framework_TestCase
      */
     public function testExecuteOnAllInterfaces()
     {
-        $process = $this->getMockBuilder('\Symfony\Component\Process\Process')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $process->expects($this->once())
-            ->method('run')
-            ->will($this->returnValue(1));
-        $process->expects($this->once())
-            ->method('isSuccessful')
-            ->will($this->returnValue(true));
+        $options = new Options(array('port' => '4043', 'executableFiles' => array('index.php')));
 
-        $pb = $this->getMock('\Symfony\Component\Process\ProcessBuilder');
-        $pb->expects($this->once())
-            ->method('setArguments')
-            ->will($this->returnSelf());
-        $pb->expects($this->once())
-            ->method('getProcess')
-            ->will($this->returnValue($process));
-
-        $server = new Server();
-        $server->configure(new Config(array('server_type' => 'lighttpd', 'project_readable_phpfiles' => array('index.php'))), $this->getMock('\Symfttpd\Project\ProjectInterface'));
-        $server->setProcessBuilder($pb);
+        $server = $this->getMock('Symfttpd\Server\ServerInterface');
+        $server->expects($this->any())
+            ->method('getOptions')
+            ->will($this->returnValue($options));
 
         $application = new \Symfttpd\Console\Application();
         $application->setContainer(new \Pimple(array(
@@ -135,17 +108,17 @@ class SpawnCommandTest extends \PHPUnit_Framework_TestCase
     {
         $server = $this->getMock('\Symfttpd\Server\ServerInterface');
 
-        $server->expects($this->exactly(3))
-            ->method('getAddress')
-            ->will($this->returnValue('localhost'));
+        $options = new Options(
+            array(
+                'address' => 'localhost',
+                'port'    => '4042',
+                'executableFiles' => array('app.php', 'app_dev.php'),
+            )
+        );
 
-        $server->expects($this->exactly(3))
-            ->method('getPort')
-            ->will($this->returnValue('4042'));
-
-        $server->expects($this->once())
-            ->method('getExecutableFiles')
-            ->will($this->returnValue(array('app.php', 'app_dev.php')));
+        $server->expects($this->any())
+            ->method('getOptions')
+            ->will($this->returnValue($options));
 
         $command = new SpawnCommand();
         $message = $command->getMessage($server);

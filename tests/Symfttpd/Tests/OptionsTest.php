@@ -11,24 +11,23 @@
 
 namespace Symfttpd\Tests;
 
-use Symfttpd\Config;
+use Symfttpd\Options;
 
 /**
- * ConfigTest class
+ * OptionsTest class
  *
  * @author Benjamin Grandfond <benjaming@theodo.fr>
- * @since 01/05/12
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class OptionsTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Config
+     * @var Options
      */
-    protected $config;
+    protected $options;
 
     public function setUp()
     {
-        $this->config = new Config();
+        $this->options = new Options();
     }
 
     /**
@@ -36,7 +35,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetIterator()
     {
-        $this->assertInstanceOf('ArrayIterator', $this->config->getIterator());
+        $this->assertInstanceOf('ArrayIterator', $this->options->getIterator());
     }
 
     /**
@@ -44,8 +43,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testAll($config)
     {
-        $this->config->add($config);
-        $this->assertEquals($config, $this->config->all());
+        $this->options->add($config);
+        $this->assertEquals($config, $this->options->all());
     }
 
     /**
@@ -53,19 +52,19 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testGet($config)
     {
-        $this->config->add($config);
-        $this->assertEquals(reset($config), $this->config->get(key($config)));
+        $this->options->add($config);
+        $this->assertEquals(reset($config), $this->options->get(key($config)));
     }
 
     public function testHas()
     {
-        $this->config->set('foo', 'bar');
-        $this->assertTrue($this->config->has('foo'));
-        $this->assertFalse($this->config->has('bar'));
+        $this->options->set('foo', 'bar');
+        $this->assertTrue($this->options->has('foo'));
+        $this->assertFalse($this->options->has('bar'));
 
-        $this->config->set('foo', null);
-        $this->assertFalse($this->config->has('foo'));
-        $this->assertFalse($this->config->has('bar'));
+        $this->options->set('foo', null);
+        $this->assertFalse($this->options->has('foo'));
+        $this->assertFalse($this->options->has('bar'));
     }
 
     /**
@@ -73,9 +72,9 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testSet($name, $value)
     {
-        $this->config->set($name, $value);
+        $this->options->set($name, $value);
 
-        $this->assertEquals($value, $this->config->get($name));
+        $this->assertEquals($value, $this->options->get($name));
     }
 
     /**
@@ -83,30 +82,30 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testAdd($config)
     {
-        $this->config->add($config);
+        $this->options->add($config);
 
         // assertArrayHasKey does not work with empty arrays.
         if (!empty($config)) {
             // assert that foo is a key of the config for instance.
-            $this->assertArrayHasKey(key($config), $this->config->all());
+            $this->assertArrayHasKey(key($config), $this->options->all());
         }
 
-        $this->assertEquals(count($config), count($this->config->all()));
+        $this->assertEquals(count($config), count($this->options->all()));
 
         // assert that array('foo', 'bar') is the value of $config['bar']
-        $this->assertEquals(reset($config), $this->config->get(key($config)));
+        $this->assertEquals(reset($config), $this->options->get(key($config)));
     }
 
     public function testMerge()
     {
-        $this->config->add(array('foo' => 'bar', 'bar' => 'foo'));
-        $this->config->merge(array('foo' => 'foo', 'test' => 'bar'));
+        $this->options->add(array('foo' => 'bar', 'bar' => 'foo'));
+        $this->options->merge(array('foo' => 'foo', 'test' => 'bar'));
 
         $this->assertEquals(array(
             'foo' => 'foo',
             'bar' => 'foo',
             'test' => 'bar',
-        ), $this->config->all());
+        ), $this->options->all());
     }
 
     public function getOptions()

@@ -39,7 +39,8 @@ EOT
         $this->addOption('path', 'p', InputOption::VALUE_OPTIONAL, 'Path of the web directory. Autodected to /web if not present.', getcwd())
             ->addOption('output', 'o', InputOption::VALUE_NONE, 'Directly output the generated configuration.')
             ->addOption('port', null, InputOption::VALUE_OPTIONAL, 'The port to listen', 4042)
-            ->addOption('bind', null, InputOption::VALUE_OPTIONAL, 'The address to bind', '127.0.0.1');
+            ->addOption('bind', null, InputOption::VALUE_OPTIONAL, 'The address to bind', '127.0.0.1')
+        ;
     }
 
     /**
@@ -72,15 +73,13 @@ EOT
         $container = $this->getApplication()->getContainer();
 
         $container['project']->setRootDir($input->getOption('path'));
-        $server = $container['server'];
-        $server->bind($input->getOption('bind'), $input->getOption('port'));
+        $container['server']->bind($input->getOption('bind'), $input->getOption('port'));
 
         try {
-
             if (null == $input->getOption('output')) {
-                $container['generator']->dump($server, true);
+                $container['generator.server']->dump($container['server']);
             } else {
-                $baseOutput->write($container['generator']->generate($server));
+                $baseOutput->write($container['generator.server']->generate($container['server']));
             }
 
         } catch (\RuntimeException $e) {

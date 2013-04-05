@@ -12,7 +12,6 @@
 namespace Symfttpd\Console\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfttpd\Console\Command\Command;
 
@@ -83,9 +82,9 @@ class InitCommand extends Command
         // Server related configuration
         $output->writeln(array('', 'Configure the server used by Symfttpd', ''));
 
-        $servers = $container['supported_servers'];
+        $servers = $this->getApplication()->getServerNames();
         $type = $dialog->select($output, '<info>Which server server do you want to use?</info>', $servers);
-        $this->userChoices['server_type'] = $servers[$type];
+        $this->userChoices['server_type'] = 'server.'.$type;
 
         $cmd = $container['finder']->find($this->userChoices['server_type']);
         $this->userChoices['server_cmd'] = $dialog->ask($output, $dialog->getQuestion('Set the server executable command', $cmd), $cmd);
@@ -93,11 +92,11 @@ class InitCommand extends Command
         // gateway related configuration
         $output->writeln(array('', 'Configure the gateway used by the server.', ''));
 
-        $gateways = $container['supported_gateways'];
+        $gateways = $this->getApplication()->getGatewayNames();
         $type = $dialog->select($output, '<info>Which gateway do you want to use?</info>', $gateways);
-        $this->userChoices['gateway_type'] = $gateways[$type];
+        $this->userChoices['gateway_type'] = 'gateway.'.$type;
 
-        if ('fastcgi' !== $servers[$type]) {
+        if ('fastcgi' !== $type) {
             $cmd = $container['finder']->find($this->userChoices['gateway_type']);
             $this->userChoices['gateway_cmd'] = $dialog->ask($output, $dialog->getQuestion('Set the gateway executable command', $cmd), $cmd);
         }

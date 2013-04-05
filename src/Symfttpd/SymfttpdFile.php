@@ -43,7 +43,6 @@ class SymfttpdFile
      */
     protected $configuration;
 
-
     /**
      * Set default paths.
      */

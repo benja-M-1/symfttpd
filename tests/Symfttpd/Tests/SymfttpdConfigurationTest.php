@@ -12,14 +12,12 @@
 namespace Symfttpd\Tests;
 
 use Symfony\Component\Config\Definition\Processor;
-use Symfttpd\Configuration;
+use Symfttpd\SymfttpdConfiguration;
 
 /**
- * ConfigurationTest description
- *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class SymfttpdConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Symfttpd\Configuration\Configuration
@@ -28,7 +26,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->configuration = new Configuration();
+        $this->configuration = new SymfttpdConfiguration();
     }
 
     /**

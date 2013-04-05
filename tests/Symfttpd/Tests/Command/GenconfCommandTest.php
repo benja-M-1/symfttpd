@@ -13,12 +13,9 @@ namespace Symfttpd\Tests\Command;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfttpd\Console\Command\GenconfCommand;
 
 /**
- * GenconfCommand test class
- *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
 class GenconfCommandTest extends \PHPUnit_Framework_TestCase
@@ -74,9 +71,9 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
         $path = $this->fixtures . '/web';
         $container = $this->getContainer($path);
 
-        $container['generator']->expects($this->once())
+        $container['generator.server']->expects($this->once())
             ->method('dump')
-            ->with($this->isInstanceOf('\Symfttpd\Server\ServerInterface'));
+        ;
 
         $application = new \Symfttpd\Console\Application();
         $application->setContainer($container);
@@ -96,10 +93,10 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
         $path = $this->fixtures . '/web';
         $container = $this->getContainer($path);
 
-        $container['generator']->expects($this->once())
+        $container['generator.server']->expects($this->once())
             ->method('generate')
-            ->with($this->isInstanceOf('\Symfttpd\Server\ServerInterface'))
-            ->will($this->returnValue('foo'));
+            ->will($this->returnValue('foo'))
+        ;
 
         $application = new \Symfttpd\Console\Application();
         $application->setContainer($container);
@@ -119,7 +116,7 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
     {
         $container = new \Pimple();
 
-        $container['generator'] = $this->getMock('\Symfttpd\ConfigurationGenerator', array(), array(), '', false);
+        $container['generator.server'] = $this->getMock('\Symfttpd\Generator\ServerConfigurationGenerator', array(), array(), '', false);
 
         $container['project'] = $this->getMock('\Symfttpd\Project\ProjectInterface', array(), array(), '', false);
         $container['project']->expects($this->once())

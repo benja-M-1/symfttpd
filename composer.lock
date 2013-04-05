@@ -1,5 +1,5 @@
 {
-    "hash": "40d8631e1a25a2bbaf731c6d016cb1b6",
+    "hash": "4fd77c527885e6891d1cc8ed7ae63b18",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -7,12 +7,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "953f21a7d83d19ecb8793e7a59e2395c32a8d480"
+                "reference": "041aa3930f8d2b466ae897440ec9471d5159c5bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/953f21a7d83d19ecb8793e7a59e2395c32a8d480",
-                "reference": "953f21a7d83d19ecb8793e7a59e2395c32a8d480",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/041aa3930f8d2b466ae897440ec9471d5159c5bf",
+                "reference": "041aa3930f8d2b466ae897440ec9471d5159c5bf",
                 "shasum": ""
             },
             "require": {
@@ -61,7 +61,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2013-02-21 10:03:40"
+            "time": "2013-02-26 10:18:11"
         },
         {
             "name": "pimple/pimple",
@@ -154,12 +154,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "01a1b2fe40ca5267a3cd549c44610d160df9f149"
+                "reference": "2b8694ad7f46072b154faaf5e74f2a06cb828fa7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/01a1b2fe40ca5267a3cd549c44610d160df9f149",
-                "reference": "01a1b2fe40ca5267a3cd549c44610d160df9f149",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/2b8694ad7f46072b154faaf5e74f2a06cb828fa7",
+                "reference": "2b8694ad7f46072b154faaf5e74f2a06cb828fa7",
                 "shasum": ""
             },
             "require": {
@@ -192,7 +192,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "http://symfony.com",
-            "time": "2013-02-18 21:28:20"
+            "time": "2013-03-01 10:42:20"
         },
         {
             "name": "symfony/console",
@@ -201,12 +201,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "f65e34d058f0990a724f78e8d091dc0a20e439ac"
+                "reference": "fae82dad073a491b91a2ad6cda2ef5d8b19a5152"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/f65e34d058f0990a724f78e8d091dc0a20e439ac",
-                "reference": "f65e34d058f0990a724f78e8d091dc0a20e439ac",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/fae82dad073a491b91a2ad6cda2ef5d8b19a5152",
+                "reference": "fae82dad073a491b91a2ad6cda2ef5d8b19a5152",
                 "shasum": ""
             },
             "require": {
@@ -239,7 +239,61 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-01-31 21:39:01"
+            "time": "2013-03-01 06:43:27"
+        },
+        {
+            "name": "symfony/event-dispatcher",
+            "version": "dev-master",
+            "target-dir": "Symfony/Component/EventDispatcher",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/EventDispatcher.git",
+                "reference": "2e1fce7bb3ea06d9e42756f1dd3edf966420c755"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/2e1fce7bb3ea06d9e42756f1dd3edf966420c755",
+                "reference": "2e1fce7bb3ea06d9e42756f1dd3edf966420c755",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/dependency-injection": ">=2.0,<3.0"
+            },
+            "suggest": {
+                "symfony/dependency-injection": "2.2.*",
+                "symfony/http-kernel": "2.2.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\EventDispatcher\\": ""
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony EventDispatcher Component",
+            "homepage": "http://symfony.com",
+            "time": "2013-02-11 11:27:01"
         },
         {
             "name": "symfony/filesystem",
@@ -295,12 +349,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "3b6261bea9fd81593c1083087f11816df53a7fea"
+                "reference": "0b33214ce24e33b6d11fd7de8784ff34ba16711f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/3b6261bea9fd81593c1083087f11816df53a7fea",
-                "reference": "3b6261bea9fd81593c1083087f11816df53a7fea",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/0b33214ce24e33b6d11fd7de8784ff34ba16711f",
+                "reference": "0b33214ce24e33b6d11fd7de8784ff34ba16711f",
                 "shasum": ""
             },
             "require": {
@@ -333,7 +387,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2013-02-04 12:42:02"
+            "time": "2013-03-01 06:43:27"
         },
         {
             "name": "symfony/process",
@@ -388,12 +442,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "15336c154c960f7e55e8b9fc1043ce7764ed7edc"
+                "reference": "39d94faabcea7d60b90c2996d51e1b6691ab39d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/15336c154c960f7e55e8b9fc1043ce7764ed7edc",
-                "reference": "15336c154c960f7e55e8b9fc1043ce7764ed7edc",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/39d94faabcea7d60b90c2996d51e1b6691ab39d2",
+                "reference": "39d94faabcea7d60b90c2996d51e1b6691ab39d2",
                 "shasum": ""
             },
             "require": {
@@ -429,7 +483,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-02-21 06:47:52"
+            "time": "2013-02-28 14:08:49"
         }
     ],
     "packages-dev": [
@@ -439,12 +493,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "25232ac64f081abd7478ae2d63fdb757f45e92b9"
+                "reference": "1.2.9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/25232ac64f081abd7478ae2d63fdb757f45e92b9",
-                "reference": "25232ac64f081abd7478ae2d63fdb757f45e92b9",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/1.2.9",
+                "reference": "1.2.9",
                 "shasum": ""
             },
             "require": {
@@ -484,7 +538,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2013-02-14 10:33:04"
+            "time": "2013-02-26 18:55:56"
         },
         {
             "name": "phpunit/php-file-iterator",

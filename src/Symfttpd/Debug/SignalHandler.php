@@ -12,7 +12,6 @@
 namespace Symfttpd\Debug;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfttpd\Gateway\GatewayProcessableInterface;
 use Psr\Log\LoggerInterface;
 use Symfttpd\Server\ServerInterface;
 
@@ -96,10 +95,6 @@ class SignalHandler
      */
     public function shutdown()
     {
-        if (null !== $gateway = $this->server->getGateway()) {
-            $gateway->stop();
-        }
-
         $this->server->stop();
 
         if (null != $this->output) {

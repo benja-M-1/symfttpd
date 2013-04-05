@@ -9,9 +9,9 @@
  * with this source code in the generator LICENSE.
  */
 
-namespace Symfttp\Tests\ConfigurationGenerator\Gateway;
+namespace Symfttp\Tests\Generator\ConfigurationGenerator;
 
-use Symfttpd\ConfigurationGenerator;
+use Symfttpd\Generator\ConfigurationGenerator;
 
 /**
  * PhpFpmFileTest description
@@ -20,11 +20,25 @@ use Symfttpd\ConfigurationGenerator;
  */
 class ConfigurationGeneratorTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var string
+     */
     public $path;
 
+    /**
+     * @var ConfigurationGenerator
+     */
     public $generator;
 
+    /**
+     * @var Twig_Environment
+     */
     public $twig;
+
+    /**
+     * @var \Symfony\Component\Filesystem\Filesystem
+     */
+    public $filesystem;
 
     public function setUp()
     {
@@ -35,17 +49,13 @@ class ConfigurationGeneratorTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->twig = $this->getMock('\Twig_Environment');
-        $this->generator = new ConfigurationGenerator($this->twig, $this->getMock('\Symfony\Component\Filesystem\Filesystem'));
+        $this->filesystem = new \Symfony\Component\Filesystem\Filesystem();
+        $this->generator = new ConfigurationGenerator($this->twig, $this->filesystem);
     }
 
     public function tearDown()
     {
-        try {
-            unlink($this->path);
-            rmdir($this->path);
-        } catch (\Exception $e) {
-            // ...
-        }
+        $this->filesystem->remove($this->path);
     }
 
     /**
@@ -55,7 +65,7 @@ class ConfigurationGeneratorTest extends \PHPUnit_Framework_TestCase
     {
         $this->generator->setPath($this->path);
 
-        $this->generator->dump($this->getMock('\Symfttpd\Gateway\GatewayInterface'));
+        $this->generator->dump('foo', 'foo', true);
 
         $this->assertTrue(file_exists($this->generator->getPath()));
     }
@@ -72,12 +82,7 @@ class ConfigurationGeneratorTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($name.'/'.$name.'.conf.twig'), $this->isType('array'))
             ->will($this->returnValue('foo'));
 
-        $subject = $this->getMock('\Symfttpd\Gateway\GatewayInterface');
-        $subject->expects($this->exactly(2))
-            ->method('getType')
-            ->will($this->returnValue($name));
-
-        $configuration = $this->generator->generate($subject);
+        $configuration = $this->generator->generate($name.'/'.$name.'.conf.twig', array());
 
         $this->assertFalse(empty($configuration));
         $this->assertEquals('foo', $configuration);

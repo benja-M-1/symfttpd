@@ -11,8 +11,7 @@
 
 namespace Symfttpd\Gateway;
 
-use Symfttpd\Config;
-use Symfttpd\ConfigurationGenerator;
+use Symfttpd\Options;
 use Symfttpd\ProcessAwareInterface;
 
 /**
@@ -23,40 +22,24 @@ use Symfttpd\ProcessAwareInterface;
 interface GatewayInterface extends ProcessAwareInterface
 {
     /**
-     * Return the type of gateway.
+     * Return the name of the gateway.
      *
      * @return string
      */
-    public function getType();
+    public function getName();
 
     /**
      * Configure the gateway with settings of the
      * Symfttpd configuration file.
      *
-     * @param \Symfttpd\Config $config
+     * @param \Symfttpd\Options $options
      */
-    public function configure(Config $config);
+    public function configure(Options $options);
 
     /**
-     * Return the executable used to run the gateway.
-     *
-     * @return String
+     * @return Options
      */
-    public function getExecutable();
-
-    /**
-     * Return the socket of the gateway used by the server.
-     *
-     * @return string
-     */
-    public function getSocket();
-
-    /**
-     * The pidfile is used to kill the process.
-     *
-     * @return string
-     */
-    public function getPidfile();
+    public function getOptions();
 
     /**
      * Start the gateway.
@@ -65,7 +48,7 @@ interface GatewayInterface extends ProcessAwareInterface
      * @return mixed
      * @throws \RuntimeException When the gateway failed to start.
      */
-    public function start(ConfigurationGenerator $generator);
+    public function start();
 
     /**
      * Stop the gateway.
@@ -73,4 +56,14 @@ interface GatewayInterface extends ProcessAwareInterface
      * @return mixed
      */
     public function stop();
+
+    /**
+     * @return string
+     */
+    public function getConfigurationFile();
+
+    /**
+     * @param string $file
+     */
+    public function setConfigurationFile($file);
 }

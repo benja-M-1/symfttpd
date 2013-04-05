@@ -18,8 +18,6 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfttpd\ConfigurationGenerator;
 use Symfttpd\Console\Command\Command;
 use Symfttpd\Server\ServerInterface;
 use Symfttpd\Tail\MultiTail;
@@ -78,8 +76,8 @@ class SpawnCommand extends Command
         // Kill other running server in the current project.
         if (true == $input->getOption('kill')) {
             // Kill existing server instance if found.
-            if (file_exists($server->getPidfile())) {
-                \Symfttpd\Utils\PosixTools::killPid($server->getPidfile(), $output);
+            if (file_exists($server->getOptions()->get('pidfile'))) {
+                \Symfttpd\Utils\PosixTools::killPid($server->getOptions()->get('pidfile'), $output);
             }
         }
 
@@ -91,8 +89,8 @@ class SpawnCommand extends Command
 
         $multitail = null;
         if ($input->getOption('tail')) {
-            $tailAccess = new Tail($server->getAccessLog());
-            $tailError  = new Tail($server->getErrorLog());
+            $tailAccess = new Tail($server->getOptions()->get('accessLog'));
+            $tailError  = new Tail($server->getOptions()->get('errorLog'));
 
             $multitail = new MultiTail(new OutputFormatter(true));
             $multitail->add('access', $tailAccess, new OutputFormatterStyle('blue'));
@@ -108,40 +106,23 @@ class SpawnCommand extends Command
         }
 
         try {
-            $generator = $container['generator'];
-
-            $paths = array();
-            foreach (array($generator->getPath(), $server->getAccessLog(), $server->getErrorLog()) as $path) {
-                if (null !== $path && $dirname = dirname($path)) {
-                    $paths[] = $dirname;
-                }
-            }
-
-            $filesystem = $container['filesystem'];
-            $filesystem->mkdir($paths);
-
-            // Start the gateway if needed.
-            if (null !== $gateway = $server->getGateway()) {
-                $gateway->start($generator);
-            }
-
             // Start the server
-            $server->start($generator);
+            $server->start();
 
             /** @var $watcher \Symfttpd\Watcher\Watcher */
             $watcher = $container['watcher'];
 
             // Watch at the document root content and restart the server if it changed.
-            $watcher->track($server->getDocumentRoot(), function ($resource) use ($server, $generator, $output) {
-                $output->writeln("<comment>Something in {$server->getDocumentRoot()} changed. Restarting {$server->getType()}.</comment>");
+            $watcher->track($server->getOptions()->get('documentRoot'), function () use ($server, $output) {
+                $output->writeln("<comment>Something in {$server->getOptions()->get('documentRoot')} changed. Restarting {$server->getName()}.</comment>");
 
-                $server->restart($generator);
+                $server->restart();
             });
 
             // Watch at server log files
             if ($multitail instanceof TailInterface) {
-                $watcher->track($server->getErrorLog(), array($multitail, 'consume'));
-                $watcher->track($server->getAccessLog(), array($multitail, 'consume'));
+                $watcher->track($server->getOptions()->get('errorLog'), array($multitail, 'consume'));
+                $watcher->track($server->getOptions()->get('accessLog'), array($multitail, 'consume'));
             }
 
             // Start watching
@@ -163,21 +144,21 @@ class SpawnCommand extends Command
      */
     public function getMessage(ServerInterface $server)
     {
-        if (null == ($address = $server->getAddress())) {
+        if (null == ($address = $server->getOptions()->get('address'))) {
             $address = 'localhost';
         }
 
         $urls = "";
-        foreach ($server->getExecutableFiles() as $file) {
+        foreach ($server->getOptions()->get('executableFiles') as $file) {
             if (preg_match('/.+\.php$/', $file)) {
-                $urls .= ' http://' . $address . ':' . $server->getPort() . '/<info>' . $file . '</info>'.PHP_EOL;
+                $urls .= ' http://' . $address . ':' . $server->getOptions()->get('port') . '/<info>' . $file . '</info>'.PHP_EOL;
             }
         }
 
-        $address = null === $server->getAddress() ? 'all interfaces' : $server->getAddress();
+        $address = null === $server->getOptions()->get('address') ? 'all interfaces' : $address;
 
         return <<<TEXT
-{$server->getType()} started on <info>{$address}</info>, port <info>{$server->getPort()}</info>.
+{$server->getName()} started on <info>{$address}</info>, port <info>{$server->getOptions()->get('port')}</info>.
 
 Available applications:
 {$urls}

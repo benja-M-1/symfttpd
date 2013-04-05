@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Symfttpd;
+namespace Symfttpd\Generator;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class ConfigurationGenerator
+class ConfigurationGenerator implements ConfigurationGeneratorInterface
 {
     /**
      * @var \Twig_Environment
@@ -71,47 +71,36 @@ class ConfigurationGenerator
     }
 
     /**
-     * @param \Symfttpd\Server\ServerInterface|\Symfttpd\Gateway\GatewayInterface $subject
-     * @param bool                                                                $force
-     *
-     * @return string            The generated file
-     * @throws \RuntimeException
+     * {@inheritdoc}
      */
-    public function dump($subject, $force = false)
+    public function dump($configuration, $filename, $force = false)
     {
-        $file = $this->getPath().'/'.$subject->getType().'.conf';
+        $file = $this->getPath().'/'.$filename;
 
         // Don't rewrite existing configuration if not forced to.
         if (false === $force && file_exists($file)) {
-            return $file;
+            return;
         }
 
-        $configuration = $this->generate($subject);
-
-        $directory = $this->getPath();
-
-        if (!$this->filesystem->exists($directory)) {
-            $this->filesystem->mkdir($directory);
+        if (!$this->filesystem->exists($this->getPath())) {
+            $this->filesystem->mkdir($this->getPath());
         }
 
         if (false === file_put_contents($file, $configuration)) {
             throw new \RuntimeException(sprintf('Cannot generate the file "%s".', $this->getPath()));
         }
 
-        if (null !== $this->logger) {
-            $this->logger->debug("Configuration for {$subject->getType()} generated in {$file}.");
-        }
-
         return $file;
     }
 
     /**
-     * @param \Symfttpd\Server\ServerInterface|\Symfttpd\Gateway\GatewayInterface $subject
+     * @param string $template
+     * @param array  $parameters
      *
      * @return string
      */
-    public function generate($subject)
+    public function generate($template, array $parameters)
     {
-        return $this->twig->render($subject->getType().'/'.$subject->getType().'.conf.twig', array('subject' => $subject));
+        return $this->twig->render($template, $parameters);
     }
 }

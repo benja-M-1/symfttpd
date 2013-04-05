@@ -16,11 +16,11 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Configuration description
+ * SymfttpdConfiguration description
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class Configuration implements ConfigurationInterface
+class SymfttpdConfiguration implements ConfigurationInterface
 {
     /**
      * Generates the configuration tree builder.
@@ -73,7 +73,6 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('server_cmd')
                     ->info('The command to use to run the server.')
-                    ->defaultNull()
                 ->end()
                 ->scalarNode('server_pidfile')
                     ->info('The pidfile stores the PID of the server process.')

@@ -9,20 +9,21 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Symfttpd\Tests\Mock;
-
-use Symfttpd\Gateway\AbstractGateway;
+namespace Symfttpd\Server;
 
 /**
- * MockGateway description
+ * Lighttpd server
  *
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class MockGateway extends AbstractGateway
+class Lighttpd extends AbstractServer
 {
+    /**
+     * @return string
+     */
     public function getName()
     {
-        return 'mock';
+        return 'lighttpd';
     }
 
     /**
@@ -30,16 +31,6 @@ class MockGateway extends AbstractGateway
      */
     protected function getCommandLineArguments()
     {
-        return array();
-    }
-
-    public function stop()
-    {
-        // do nothing
-    }
-
-    public function start()
-    {
-        // do nothing
+        return array($this->options['executable'], '-f', $this->getConfigurationFile());
     }
 }

@@ -11,11 +11,10 @@
 
 namespace Symfttpd\Gateway;
 
-use Symfttpd\Gateway\BaseGateway;
-use Symfttpd\ConfigurationGenerator;
+use Symfttpd\Gateway\AbstractGateway;
 
 /**
- * Fastcgi gateway definition.
+ * FastCGI Gateway
  *
  * Fastcgi is mainly used with lighttpd. For the moment
  * we don't care about making it working with NGinx.
@@ -23,34 +22,24 @@ use Symfttpd\ConfigurationGenerator;
  * @see issue https://github.com/benja-M-1/symfttpd/issues/38
  * @author Benjamin Grandfond <benjamin.grandfond@gmail.com>
  */
-class Fastcgi extends BaseGateway
+class Fastcgi extends AbstractGateway
 {
-    const TYPE_FASTCGI = 'fastcgi';
-
     /**
      * @return string
      */
-    public function getType()
+    public function getName()
     {
-        return self::TYPE_FASTCGI;
+        return 'fastcgi';
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function getCommandLineArguments(ConfigurationGenerator $generator)
-    {
-        return array();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function start(ConfigurationGenerator $generator)
+    public function start()
     {
         // Fastcgi is run by Lighttpd we don't need to start a process.
         if (null !== $this->logger) {
-            $this->logger->debug("{$this->getType()} started.");
+            $this->logger->debug("{$this->getName()} started.");
         }
     }
 
@@ -60,7 +49,15 @@ class Fastcgi extends BaseGateway
     public function stop()
     {
         if (null !== $this->logger) {
-            $this->logger->debug("{$this->getType()} stopped.");
+            $this->logger->debug("{$this->getName()} stopped.");
         }
+    }
+
+    /**
+     * {@inheritdoccom}
+     */
+    protected function getCommandLineArguments()
+    {
+        return array();
     }
 }
