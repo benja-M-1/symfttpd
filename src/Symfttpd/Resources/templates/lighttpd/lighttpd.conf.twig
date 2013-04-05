@@ -1,5 +1,3 @@
-{% set server = subject %}
-
 {% block modules %}
 server.modules = (
     "mod_rewrite",
@@ -11,10 +9,10 @@ server.modules = (
 {% endblock modules %}
 
 {% block server %}
-server.document-root  = "{{ server.documentRoot }}"
-server.port           = {{ server.port }}
-{% if server.address is not null %}
-server.bind           = "{{ server.address }}"
+server.document-root  = "{{ documentRoot }}"
+server.port           = {{ port }}
+{% if address is not null %}
+server.bind           = "{{ address }}"
 {% endif %}
 server.follow-symlink = "enable"
 static-file.exclude-extensions = (".php")
@@ -22,10 +20,10 @@ static-file.exclude-extensions = (".php")
 # http://redmine.lighttpd.net/issues/406
 server.force-lowercase-filenames = "disable"
 
-server.pid-file       = "{{ server.pidfile }}"
+server.pid-file       = "{{ pidfile }}"
 
-server.errorlog       = "{{ server.errorLog }}"
-accesslog.filename    = "{{ server.accessLog }}"
+server.errorlog       = "{{ errorLog }}"
+accesslog.filename    = "{{ accessLog }}"
 
 debug.log-file-not-found = "enable"
 debug.log-request-header-on-error = "enable"
@@ -36,9 +34,9 @@ setenv.add-response-header = ( "X-Symfttpd" => "1")
 fastcgi.server = ( ".php" =>
   ( "localhost" =>
     (
-      "socket" => "{{ server.gateway.socket|raw }}",
-      {% if server.gateway.executable is not empty %}
-      "bin-path" => "{{ server.gateway.executable }}",
+      "socket" => "{{ gateway.options.socket|raw }}",
+      {% if gateway.options.executable is not empty %}
+      "bin-path" => "{{ gateway.options.executable }}",
       {% endif %}
       "max-procs" => 1,
       "max-load-per-proc" => 1,
@@ -54,4 +52,30 @@ fastcgi.server = ( ".php" =>
 {% endblock fastcgi %}
 
 {% include 'lighttpd/mime-types.conf.twig' %}
-{% include 'lighttpd/rules.conf.twig' with {'server': server} %}
+
+{% block rules %}
+    url.rewrite-once = (
+    {% for dir in allowedDirs %}
+        "^/{{ dir|replace({'/':'\/'}) }}/.+" => "$0",
+    {% endfor %}
+
+    {% for file in allowedFiles %}
+        "^/{{ file|replace({'/':'\/'}) }}$" => "$0",
+    {% endfor %}
+
+    {% for php in executableFiles %}
+        "^/{{ php|replace({'/':'\/'}) }}(/[^\?]*)?(\?.*)?" => "/{{ php }}$1$2",
+    {% endfor %}
+
+    "^(/[^\?]*)(\?.*)?" => "/{{ indexFile }}$1$2"
+    )
+
+    {% for file in unexecutableDirs %}
+        {% if dirs[file] is defined %}
+            $HTTP["url"] =~ "^/{{ file }}/" {
+            url.access-deny = (".php")
+            }
+        {% endif %}
+    {% endfor %}
+{% endblock rules %}
+
