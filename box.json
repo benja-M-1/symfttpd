@@ -12,14 +12,19 @@
             "name": ["*.php"],
             "in": ["vendor"],
             "exclude": [
-                "vendor/twig/twig/doc",
-                "vendor/twig/twig/test",
-                "vendor/monolog/monolog/doc",
-                "vendor/monolog/monolog/tests",
-                "vendor/pimple/pimple/tests",
-                "vendor/bin",
-                "vendor/phpmd",
-                "vendor/pdepend"
+                "twig/twig/doc",
+                "twig/twig/test",
+                "monolog/monolog/doc",
+                "monolog/monolog/tests",
+                "pimple/pimple/tests",
+                "symfony/config/Symfony/Component/Config/Tests",
+                "symfony/console/Symfony/Component/Console/Tests",
+                "symfony/event-dispatcher/Symfony/Component/EventDispatcher/Tests",
+                "symfony/filesystem/Symfony/Component/Filesystem/Tests",
+                "symfony/finder/Symfony/Component/Finder/Tests",
+                "symfony/process/Symfony/Component/Process/Tests",
+                "symfony/resource-watcher/Symfony/Component/ResourceWatcher/Tests",
+                "bin"
             ]
         }
     ],
