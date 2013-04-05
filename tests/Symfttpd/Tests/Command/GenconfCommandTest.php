@@ -53,7 +53,6 @@ class GenconfCommandTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The path "/foo" does not exist
      */
     public function testExecuteException()
     {
