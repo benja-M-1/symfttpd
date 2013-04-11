@@ -23,7 +23,7 @@ copy/pasting and easy updates (only restarting lighttpd is necessary).
 
 #### As PHAR archive
 
-[Download](https://github.com/downloads/benja-M-1/symfttpd/symfttpd.phar) the `.phar` file.
+[Download](http://benja-m-1.github.com/symfttpd/downloads/symfttpd.phar) the `.phar` file.
 
 #### As requirement of your project
 
