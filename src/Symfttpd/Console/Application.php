@@ -227,9 +227,9 @@ class Application extends BaseApplication
 
         $c['dispatcher'] = $c->share(function ($c) {
             $dispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
-            $dispatcher->addListener('server.start',  array($this->container['listener.server'],  'onStart'));
-            $dispatcher->addListener('gateway.start', array($this->container['listener.gateway'], 'onStart'));
-            $dispatcher->addListener('server.stop',   array($this->container['listener.server'],  'onStop'));
+            $dispatcher->addListener('server.start',  array($c['listener.server'],  'onStart'));
+            $dispatcher->addListener('gateway.start', array($c['listener.gateway'], 'onStart'));
+            $dispatcher->addListener('server.stop',   array($c['listener.server'],  'onStop'));
 
             return $dispatcher;
         });
