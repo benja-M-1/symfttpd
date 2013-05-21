@@ -211,8 +211,11 @@ class Application extends BaseApplication
                 $level = \Monolog\Logger::DEBUG;
             }
 
+            $logDir = $c['options']->get('symfttpd_dir').'/log';
+            $c['filesystem']->mkdir($logDir);
+
             $logger = new \Monolog\Logger('symfttpd');
-            $logger->pushHandler(new \Monolog\Handler\StreamHandler($c['options']->get('symfttpd_dir').'/log/symfttpd.log', $level));
+            $logger->pushHandler(new \Monolog\Handler\StreamHandler($logDir.'/symfttpd.log', $level));
 
             return $logger;
         });
