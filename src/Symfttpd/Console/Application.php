@@ -20,6 +20,7 @@ use Symfttpd\Console\Command\InitCommand;
 use Symfttpd\Console\Command\SelfupdateCommand;
 use Symfttpd\Console\Command\SpawnCommand;
 use Symfttpd\Console\Helper\DialogHelper;
+use Symfttpd\Console\Helper\SymfttpdHelper;
 
 /**
  * Application
@@ -38,8 +39,6 @@ class Application extends BaseApplication
      */
     public function __construct()
     {
-        parent::__construct('Symfttpd', \Symfttpd\Symfttpd::VERSION);
-
         $this->container = $c = new \Pimple();
 
         $c['debug'] = false;
@@ -238,6 +237,8 @@ class Application extends BaseApplication
         $this->registerServers();
         $this->registerGateways();
         $this->registerListeners();
+
+        parent::__construct('Symfttpd', \Symfttpd\Symfttpd::VERSION);
     }
 
     /**
@@ -408,7 +409,8 @@ class Application extends BaseApplication
     {
         $helperSet = parent::getDefaultHelperSet();
 
-        $helperSet->set(new DialogHelper(), 'dialog');
+        $helperSet->set(new DialogHelper());
+        $helperSet->set(new SymfttpdHelper($this->getServerNames(), $this->getGatewayNames()));
 
         return $helperSet;
     }

@@ -14,6 +14,7 @@ namespace Symfttpd\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfttpd\Console\Command\Command;
+use Symfttpd\Console\Helper\SymfttpdHelper;
 
 /**
  * InitCommand class
@@ -66,6 +67,9 @@ class InitCommand extends Command
         /** @var $dialog \Symfttpd\Console\Helper\DialogHelper */
         $dialog = $this->getHelper('dialog');
 
+        /** @var  $symfttpdHelper SymfttpdHelper */
+        $symfttpdHelper = $this->getHelper('symfttpd');
+
         // Project related configuration
         $output->writeln(array('','Configure your project.',''));
 
@@ -82,9 +86,7 @@ class InitCommand extends Command
         // Server related configuration
         $output->writeln(array('', 'Configure the server used by Symfttpd', ''));
 
-        $servers = $this->getApplication()->getServerNames();
-        $type = $dialog->select($output, '<info>Which server server do you want to use?</info>', $servers);
-        $this->userChoices['server_type'] = 'server.'.$type;
+        $this->userChoices['server_type'] = $symfttpdHelper->selectServer($output);
 
         $cmd = $container['finder']->find($this->userChoices['server_type']);
         $this->userChoices['server_cmd'] = $dialog->ask($output, $dialog->getQuestion('Set the server executable command', $cmd), $cmd);
@@ -92,11 +94,9 @@ class InitCommand extends Command
         // gateway related configuration
         $output->writeln(array('', 'Configure the gateway used by the server.', ''));
 
-        $gateways = $this->getApplication()->getGatewayNames();
-        $type = $dialog->select($output, '<info>Which gateway do you want to use?</info>', $gateways);
-        $this->userChoices['gateway_type'] = 'gateway.'.$type;
+        $this->userChoices['gateway_type'] = $symfttpdHelper->selectGateway($output);
 
-        if ('fastcgi' !== $type) {
+        if ('fastcgi' !== $this->userChoices['gateway_type']) {
             $cmd = $container['finder']->find($this->userChoices['gateway_type']);
             $this->userChoices['gateway_cmd'] = $dialog->ask($output, $dialog->getQuestion('Set the gateway executable command', $cmd), $cmd);
         }
