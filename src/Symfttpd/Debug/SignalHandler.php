@@ -81,7 +81,7 @@ class SignalHandler
         register_shutdown_function(array($handler, 'shutdown'));
 
         if (!function_exists('pcntl_signal')) {
-            throw \RuntimeException('Symfttpd needs PCNTL to be enabled to handle signals to kill every processes when stopping spawning.');
+            throw new \RuntimeException('Symfttpd needs PCNTL to be enabled to handle signals to kill every processes when stopping spawning.');
         }
 
         pcntl_signal(SIGTERM, array($handler, 'handleSignal'));
